@@ -1287,7 +1287,7 @@ if REGEXP matched, func is called with no args, return value is the next value.
 (setq mew-imap-auth t)
 (setq mew-user "740172927helloworld")
 (setq mew-mail-domain "gmail.com")
-(setq mew-pop-user "740172927helloworld@gmail.com")
+(setq mew-pop-user "youemail@xx.com")
 (setq mew-pop-auth 'pass)
 (setq mew-pop-ssl t)
 (setq mew-pop-delete nil)
@@ -1298,7 +1298,7 @@ if REGEXP matched, func is called with no args, return value is the next value.
 (setq mew-smtp-auth t)
 (setq mew-smtp-ssl t)
 (setq mew-smtp-ssl-port "465")
-(setq mew-smtp-user "740172927helloworld@gmail.com")
+(setq mew-smtp-user "youemail@xx.com")
 (setq mew-smtp-server "smtp.gmail.com")
 (setq mew-ssl-verify-level 0)
 

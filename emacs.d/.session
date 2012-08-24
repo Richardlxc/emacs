@@ -11,7 +11,7 @@
 (setq-default extended-command-history '("twittering-update-status-interactive" "twit" "weblogger-setup-weblog" "weblogger-start-entry" "cfw:open-calendar-buffer" "wdired-change-to-wdired-mode" "shell" "display-time" "buffer-disable-undo" "iswitchb-mode" "org-agenda"))
 (setq-default ido-buffer-history '("Comp" "tw" "py" "cf" "co" "k" "sc" "scr" "she" "me" "he" "dd" "ddd" "d" "esh" "hewoe" "hell" "in" "wo" "w" "ba" "y" "sr" "id"))
 (setq-default iswitchb-history '("ba" "me" "sc" "hello" "co" "wo" "mes"))
-(setq-default minibuffer-history '("854710" "740172927helloworld@gmail.com" "http://1.richardsae.sinaapp.com/xmlrpc/" "1" "4" "12" "2" "32" "97" "20" "98"))
+(setq-default minibuffer-history '("854710" "youemail@xx.com" "http://1.richardsae.sinaapp.com/xmlrpc/" "1" "4" "12" "2" "32" "97" "20" "98"))
 (setq-default read-expression-history '("deew"))
 (setq-default serial-name-history '("/dev/ttyS0"))
 (setq-default serial-speed-history '("9600" "1200" "2400" "4800" "14400" "19200" "28800" "38400" "57600" "115200"))
