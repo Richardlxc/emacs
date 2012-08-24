@@ -1,0 +1,794 @@
+;; -*- coding: utf-8 -*-
+(("EverET.org" "Better to do something imperfectly than to do nothing flawlessly." "http://everet.org" (20394 9268 5112) feed 0 nil nil ((title nil "EverET.org") (atom:link ((href . "http://everet.org/feed") (rel . "self") (type . "application/rss+xml"))) (link nil "http://everet.org") (description nil "Better to do something imperfectly than to do nothing flawlessly.") (lastBuildDate nil "Sun, 06 May 2012 12:50:35 +0000") (language nil "en") (sy:updatePeriod nil "hourly") (sy:updateFrequency nil "1") (generator nil "http://wordpress.org/?v=3.3.2") (item nil (title nil "Python根据图片生成字符画") (link nil "http://everet.org/2012/05/python-ascii-art.html") (comments nil "http://everet.org/2012/05/python-ascii-art.html#comments") (pubDate nil "Sun, 06 May 2012 12:50:19 +0000") (dc:creator nil "Stupid ET") (category nil "我的代码") (category nil "我的分享") (category nil "Python") (category nil "图像处理") (guid ((isPermaLink . "false")) "http://everet.org/?p=1012") (description nil "字符画很好玩，我们来看看怎样将一张图片变成字符画。 我们首先将图片变成黑白的，那么每个像素的取值范围为：0-255. 然后我们将0-255映射到0-14的范围上，然后用如下字符代替： color = &#8216;MNHQ$OC?7&#62;!:-;.&#8217; 也就是像素为0的点用“M”表示，像素为14的点用“.”表示。 原理非常的简单，我们用Python来编写的话也非常的简单。只要借助PIL，就可以很轻松地在Python中处理图像。 我们来看一段代码： 整个程序的核心都在下面两行，一个是字符的色阶表，一个是映射公式。 color = 'MNHQ$OC?7&#62;!:-;.' pic_str += color[int(pix[w, h]) * 14 / 255] 效果如下： 原图： 字符画： 在线的图片字符画生成请见：http://everet.org:1758/ 源码：https://github.com/cedricporter/et-python/tree/master/web%20server/webpy 本文链接：http://everet.org/2012/05/python-ascii-art.html &#124; © EverET.org 本文评论：2 comments") (content:encoded nil "<p>字符画很好玩，我们来看看怎样将一张图片变成字符画。</p><p>我们首先将图片变成黑白的，那么每个像素的取值范围为：0-255.</p><p>然后我们将0-255映射到0-14的范围上，然后用如下字符代替：</p><p>color = &#8216;MNHQ$OC?7&gt;!:-;.&#8217;</p><p>也就是像素为0的点用“M”表示，像素为14的点用“.”表示。</p><p>原理非常的简单，我们用Python来编写的话也非常的简单。只要借助PIL，就可以很轻松地在Python中处理图像。</p><p>我们来看一段代码：<span id=\"more-1012\"></span></p><pre class=\"brush: python; title: ; notranslate\">
+import Image
+
+color = 'MNHQ$OC?7&gt;!:-;.'
+
+def to_html(func):
+    html_head = '''
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;style type=&quot;text/css&quot;&gt;
+                  body {font-family:Monospace; font-size:5px;}
+                &lt;/style&gt;
+              &lt;/head&gt;
+            &lt;body&gt; '''
+    html_tail = '&lt;/body&gt;&lt;/html&gt;'
+
+    def wrapper(img):
+        pic_str = func(img)
+        pic_str = ''.join(l + ' &lt;br/&gt;' for l in pic_str.splitlines())
+        return html_head + pic_str + html_tail
+
+    return wrapper
+
+@to_html
+def make_char_img(img):
+    pix = img.load()
+    pic_str = ''
+    width, height = img.size
+    for h in xrange(height):
+        for w in xrange(width):
+            pic_str += color[int(pix[w, h]) * 14 / 255]
+        pic_str += '\\n'
+    return pic_str
+
+def preprocess(img_name):
+    img = Image.open(img_name)
+
+    w, h = img.size
+    m = max(img.size)
+    delta = m / 200.0
+    w, h = int(w / delta), int(h / delta)
+    img = img.resize((w, h))
+    img = img.convert('L')
+
+    return img
+
+def save_to_file(filename, pic_str):
+    outfile = open(filename, 'w')
+    outfile.write(pic_str)
+    outfile.close()
+
+def main():
+    img = preprocess('6.jpg')
+    pic_str = make_char_img(img)
+    save_to_file('char.html', pic_str)
+
+if __name__ == '__main__':
+    main()
+</pre><p>整个程序的核心都在下面两行，一个是字符的色阶表，一个是映射公式。</p><blockquote><pre>color = 'MNHQ$OC?7&gt;!:-;.'
+pic_str += color[int(pix[w, h]) * 14 / 255]</pre></blockquote><p>效果如下：</p><p>原图：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-06-203607.png\" rel=\"lightbox[1012]\"><img title=\"Screenshot from 2012-05-06 20:36:07\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-06-203607.png\" alt=\" \" width=\"474\" height=\"305\" /></a></p><p>字符画：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/f8e22973ddcb35e46163c796bce096fcScreenshot-at-2012-04-25-161736.png\" rel=\"lightbox[1012]\"><img class=\"alignnone size-full wp-image-1013\" title=\"f8e22973ddcb35e46163c796bce096fcScreenshot at 2012-04-25 16:17:36\" src=\"http://everet.org/wp-content/uploads/2012/05/f8e22973ddcb35e46163c796bce096fcScreenshot-at-2012-04-25-161736.png\" alt=\" \" width=\"410\" height=\"707\" /></a></p><p>在线的图片字符画生成请见：<a href=\"http://everet.org:1758/\">http://everet.org:1758/</a></p><p>源码：<a href=\"https://github.com/cedricporter/et-python/tree/master/web%20server/webpy\">https://github.com/cedricporter/et-python/tree/master/web%20server/webpy</a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/python-ascii-art.html\">http://everet.org/2012/05/python-ascii-art.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/python-ascii-art.html#comments\">2 comments</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/python-ascii-art.html/feed") (slash:comments nil "2")) (item nil (title nil "猜想祖国的伟大的围墙的原理") (link nil "http://everet.org/2012/05/gfw.html") (comments nil "http://everet.org/2012/05/gfw.html#comments") (pubDate nil "Sat, 05 May 2012 11:18:34 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Web") (guid ((isPermaLink . "false")) "http://everet.org/?p=999") (description nil "防民之口，甚于防川。 引用自百度百科的对于“防民之口，甚于防川”的启示： 中国历史上有很多统治者荒淫无道，但他们又怕人民议论，就采取了压制社会言论的措施，以为可以高枕无忧、平安无事。实际上这是最愚蠢的作法，它不仅使下情无法上达，错误的政策得不到纠正，加剧社会矛盾。更可怕的在于虽然民众口上不说，但心里却充满了仇恨，只要社会矛盾到达临界点，大规模的暴乱必然爆发，给社会生产力造成极大破坏。正可谓“防民之口，甚于防川。”中国人是世界上最能忍受暴政的民族，但也是爆发起义最多的国家。 无逻辑的舆论的控制，究竟会引发什么后果呢？或许多年后答案便自己浮现。 暂且不谈论我们伟大的围墙的对于人民生活的影响，我们来看看它的技术方面的实现。 景德镇的国域网 景德镇的国域网对外的出口线路不多，只要在这些出口处架设好强大的过滤器，便可以保障国民思想安全性。这样过滤不会太麻烦，因为出口就这么几个，派兵守住就好。 在网络课上，刘孜文老师给我们讲了一个他的经历，我大致复述一下（语文很差，希望不会扭曲原意）： 老师的一个同学在收到领导指示，要弄一个省级的防火墙，这样可以方便警察叔叔将一些骗子网站、黄色网站过滤掉。于是他的同学开始鸭梨巨大了，因为一个省的对外的线路有很多很多条，很难在每一条出口安上防火墙，因为线路太多了。 这个例子说明，一个国家级的要比一个省级的围墙容易得多，原因是关口少，不像省与省之间的线路四通八达。 那么我们知道了在国域网对外的出口处有各种Cisco等强大的怪兽守住，我们来探讨一下这些怪兽的机制。 工作机制 在普遍的看法，我们伟大的围墙工作机制主要包括IP黑名单、内容过滤和DNS劫持。 IP黑名单 怪兽手里肯定把握着一份黑名单，上面写着Facebook、twitter、youtube等的ip地址，一旦发现镇民发往黑名单中地址的请求数据包，就直接无情地丢弃，当镇民等到花儿都谢了都没有收到服务器发回的包，他便生了一种叫超时的病而放弃了。 温总理曾说过：中国财富再多，除以13亿人，就少得可怜了；中国问题再小，乘以13亿人，也就很大了。 一个秒钟一个请求*13亿，就是一个很大的请求了。请问怪兽如何可以高速地在IP黑名单中查询这个ip在不在呢？ 对于ipv4，每个ip地址32位，可以看作32位无符号整形。也就是2^32个ip地址。黑名单应该也不小，怎么也有几千几万几十万吧。那么怪兽怎么处理呢？ 怪兽如果很2B的话，它会拿着收到数据包的ip一个一个地和黑名单中的ip比较，如果在黑名单里面就将其丢弃，不在那就放过它。这样怪兽花的时间是O(n)，n为黑名单的大小。 怪兽智商稍微高一点的话，它会将黑名单中的排好序，然后使用伟大的二分查找法术，就可以花O(log(n))的时间判断那个ip在不在黑名单里面。 怪事如果智商不错的话，它会构建一个4G个单位的哈希表blacklist，然后直接将ip作为索引，初始化哈希表blacklist，blacklist[ip] = 1, if ip in ip_blacklist，这样，在一个请求过来的时候，怪兽只需要花费O(1)的时间就可以知道ip在不在黑名单里面。 对于一个4G个单位的ip黑名单hash table，我们可以一个bit来表示一个ip是不是属于特殊对待ip。于是我们的ip hash table大小为： 4G bit = 4 / 8 G Byte = 0.5 GB = 512 MB 怪兽只需要有512MB的空闲内存就可以构建这么一个hash表，然后无论是多线程模式的还是多进程模式的设计都可以共享这块放hash表的内存，中途如果有新增或者取消话都可以直接更新hash表，当然可能会因为有缓存而导致不一致，但是在这个大环境下也不一那么较真，让正确率100%，所以连锁都可以不用加，这样怪兽的负担会轻很多。不过bitmap在ipv6下是不那么实际的，因为使用内存会非常巨大，2^128bit，会消耗39614081257132168796771975168GB的内存来放bitmap。可能这也是怪兽没有对ipv6下手的原因。 我们来看一段代码，描述了高效判断是否在黑名单的方法。 当然可能还有更好的方法，请赐教～ 内容过滤 曾经在一个人博客看到程序员的工作环境怎样为好，里面有一句让我影响无比深刻“访问Google的服务没有障碍”。这个真滴非常重要呀，虽然现在Google的https可以用了，不过好慢好慢，受不了啊。 像我们如果在Google搜索某些关键词后，我们从Google打开了某些网址后，不仅那些网站访问不了，而且Google就会被怪兽吃了。 Google不作恶啊，为什么要对Google那么狠&#8230;&#8230; 例如我们在Google中搜索 然后就会发现Google被吃了。 怪兽做了什么？<a href=\"http://everet.org/2012/05/gfw.html\"><br /><br /> (More)…</a>") (content:encoded nil "<h2>防民之口，甚于防川。</h2><p>引用自百度百科的对于“防民之口，甚于防川”的启示：</p><blockquote><p>中国历史上有很多统治者荒淫无道，但他们又怕人民议论，就采取了压制社会言论的措施，以为可以高枕无忧、平安无事。实际上这是最愚蠢的作法，它不仅使下情无法上达，错误的政策得不到纠正，加剧社会矛盾。更可怕的在于虽然民众口上不说，但心里却充满了仇恨，只要社会矛盾到达临界点，大规模的暴乱必然爆发，给社会生产力造成极大破坏。正可谓“防民之口，甚于防川。”中国人是世界上最能忍受暴政的民族，但也是爆发起义最多的国家。</p></blockquote><p>无逻辑的舆论的控制，究竟会引发什么后果呢？或许多年后答案便自己浮现。</p><p>暂且不谈论我们伟大的围墙的对于人民生活的影响，我们来看看它的技术方面的实现。<span id=\"more-999\"></span></p><h2>景德镇的国域网</h2><p>景德镇的国域网对外的出口线路不多，只要在这些出口处架设好强大的过滤器，便可以保障国民思想安全性。这样过滤不会太麻烦，因为出口就这么几个，派兵守住就好。</p><p>在网络课上，刘孜文老师给我们讲了一个他的经历，<a href=\"http://everet.org/2012/05/gfw.html\">我</a>大致复述一下（语文很差，希望不会扭曲原意）：</p><p>老师的一个同学在收到领导指示，要弄一个省级的防火墙，这样可以方便警察叔叔将一些骗子网站、黄色网站过滤掉。于是他的同学开始鸭梨巨大了，因为一个省的对外的线路有很多很多条，很难在每一条出口安上防火墙，因为线路太多了。</p><p>这个例子说明，一个国家级的要比一个省级的围墙容易得多，原因是关口少，不像省与省之间的线路四通八达。</p><p>那么我们知道了在国域网对外的出口处有各种Cisco等强大的怪兽守住，我们来探讨一下这些怪兽的机制。</p><h2>工作机制</h2><p>在普遍的看法，我们伟大的围墙工作机制主要包括IP黑名单、内容过滤和DNS劫持。</p><h3>IP黑名单</h3><p>怪兽手里肯定把握着一份黑名单，上面写着Facebook、twitter、youtube等的ip地址，一旦发现镇民发往黑名单中地址的请求数据包，就直接无情地丢弃，当镇民等到花儿都谢了都没有收到服务器发回的包，他便生了一种叫超时的病而放弃了。</p><p>温总理曾说过：中国财富再多，除以13亿人，就少得可怜了；中国问题再小，乘以13亿人，也就很大了。</p><p>一个秒钟一个请求*13亿，就是一个很大的请求了。请问怪兽如何可以高速地在IP黑名单中查询这个ip在不在呢？</p><p>对于ipv4，每个ip地址32位，可以看作32位无符号整形。也就是2^32个ip地址。黑名单应该也不小，怎么也有几千几万几十万吧。那么怪兽怎么处理呢？</p><ul><li>怪兽如果很2B的话，它会拿着收到数据包的ip一个一个地和黑名单中的ip比较，如果在黑名单里面就将其丢弃，不在那就放过它。这样怪兽花的时间是O(n)，n为黑名单的大小。</li><li>怪兽智商稍微高一点的话，它会将黑名单中的排好序，然后使用伟大的二分查找法术，就可以花O(log(n))的时间判断那个ip在不在黑名单里面。</li><li>怪事如果智商不错的话，它会构建一个4G个单位的哈希表blacklist，然后直接将ip作为索引，初始化哈希表blacklist，blacklist[ip] = 1, if ip in ip_blacklist，这样，在一个请求过来的时候，怪兽只需要花费O(1)的时间就可以知道ip在不在黑名单里面。</li></ul><p>对于一个4G个单位的ip黑名单hash table，我们可以一个bit来表示一个ip是不是属于特殊对待ip。于是我们的ip hash table大小为：</p><blockquote><p>4G bit = 4 / 8 G Byte = 0.5 GB = 512 MB</p></blockquote><p>怪兽只需要有512MB的空闲内存就可以构建这么一个hash表，然后无论是多线程模式的还是多进程模式的设计都可以共享这块放hash表的内存，中途如果有新增或者取消话都可以直接更新hash表，当然可能会因为有缓存而导致不一致，但是在这个大环境下也不一那么较真，让正确率100%，所以连锁都可以不用加，这样怪兽的负担会轻很多。不过bitmap在ipv6下是不那么实际的，因为使用内存会非常巨大，2^128bit，会消耗39614081257132168796771975168GB的内存来放bitmap。可能这也是怪兽没有对ipv6下手的原因。</p><p>我们来看一段代码，描述了高效判断是否在黑名单的方法。</p><pre class=\"brush: cpp; title: ; notranslate\">
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;arpa/inet.h&gt;
+
+#define BITSPERWORD 32
+#define SHIFT 5			// 2 ^ 5 = 32
+#define MASK 0x1F		// 0x1F = (11111)b
+#define SET(a, i) ((a)[(i)&gt;&gt;SHIFT] |= (1&lt;&lt;((i) &amp; MASK)))
+#define CLR(a, i) ((a)[(i)&gt;&gt;SHIFT] &amp;= ~(1&lt;&lt;((i) &amp; MASK)))
+#define TEST(a, i) ((a)[(i)&gt;&gt;SHIFT] &amp; (1&lt;&lt;((i) &amp; MASK)))
+
+inline void test_block(int* blacklist, char* ip)
+{
+     if (TEST(blacklist, inet_addr(ip)))
+	  printf(&quot;%s is blocked.\\n&quot;, ip);
+     else
+	  printf(&quot;%s is pass.\\n&quot;, ip);
+}
+
+int main(int argc, char *argv[])
+{
+     const unsigned long long N = 4294967295;
+     const unsigned int SIZE = N / BITSPERWORD + 1;
+     int* blacklist = (int*)malloc(SIZE * sizeof(int));
+
+     memset(blacklist, SIZE, 0xff);
+     SET(blacklist, inet_addr(&quot;243.185.187.39&quot;));
+     SET(blacklist, inet_addr(&quot;8.8.4.4&quot;));
+     SET(blacklist, inet_addr(&quot;202.84.125.66&quot;));
+     SET(blacklist, inet_addr(&quot;222.221.31.55&quot;));
+     SET(blacklist, inet_addr(&quot;183.182.44.111&quot;));
+     SET(blacklist, inet_addr(&quot;255.255.255.156&quot;));
+
+     test_block(blacklist, &quot;8.8.4.4&quot;);
+     test_block(blacklist, &quot;222.222.222.222&quot;);
+     test_block(blacklist, &quot;202.84.125.66&quot;);
+     test_block(blacklist, &quot;88.54.32.156&quot;);
+     test_block(blacklist, &quot;255.255.255.156&quot;);
+
+     free(blacklist);
+     return 0;
+}
+</pre><p>当然可能还有更好的方法，请赐教～</p><h2>内容过滤</h2><p>曾经在一个人博客看到程序员的工作环境怎样为好，里面有一句让我影响无比深刻“<a href=\"http://timyang.net/misc/work-environment-productivity/\" target=\"_blank\">访问Google的服务没有障碍</a>”。这个真滴非常重要呀，虽然现在Google的https可以用了，不过好慢好慢，受不了啊。</p><p>像我们如果在Google搜索某些关键词后，我们从Google打开了某些网址后，不仅那些网站访问不了，而且Google就会被怪兽吃了。</p><p>Google不作恶啊，为什么要对Google那么狠&#8230;&#8230;</p><p>例如我们在Google中搜索</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/fq.png\" rel=\"lightbox[999]\"><img class=\"alignnone size-full wp-image-1000\" title=\"fq\" src=\"http://everet.org/wp-content/uploads/2012/05/fq.png\" alt=\" \" width=\"51\" height=\"27\" /></a></p><p>然后就会发现Google被吃了。</p><p>怪兽做了什么？</p><p>怪兽首先伪造Google的ip发了许多RST包给镇民的浏览器，然后怪兽也可能伪造镇民的ip发了很多RST给Google，挑拨离间，最后镇民和Google在经过一段努力后发现还是无法沟通就不再继续通信了。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/gfw.png\" rel=\"lightbox[999]\"><img class=\"alignnone size-full wp-image-1001\" title=\"gfw\" src=\"http://everet.org/wp-content/uploads/2012/05/gfw.png\" alt=\" \" width=\"693\" height=\"634\" /></a></p><p>怪兽应该对http包进行了扫描，看看有没有什么敏感词，有的话就伪装成对方开始卑鄙地发送RST，来挑拨离间最终实现断开连接。</p><h2>DNS劫持</h2><p>有一部分怪兽应该会专门负责污染国内DNS服务器的缓存，导致我们解析到了错误的ip。有一部分怪兽会篡改国外DNS发回的响应，导致镇民获得了错误的ip。</p><h2>结言</h2><p>防民之口，甚于防川。过度地压制景德镇的镇民似乎并不太好，希望未来的祖国会更加开放、更加发达。</p><p>天朝威武～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/gfw.html\">http://everet.org/2012/05/gfw.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/gfw.html#comments\">2 comments</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/gfw.html/feed") (slash:comments nil "2")) (item nil (title nil "在Ubuntu下编译调试版的Python") (link nil "http://everet.org/2012/05/compile-debug-python-in-ubuntu.html") (comments nil "http://everet.org/2012/05/compile-debug-python-in-ubuntu.html#comments") (pubDate nil "Fri, 04 May 2012 12:38:05 +0000") (dc:creator nil "Stupid ET") (category nil "Linux") (category nil "我的分享") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=992") (description nil "在Windows调试Python解释器还是非常方便的，因为有强大的VS。 不过在Linux下可能有点不那么顺畅。但是稍微设置一下还是可以很方便地调试的。我们来看看在Ubuntu下怎么做。 获取源码 在Ubuntu下获取Python2.7的源码非常方便，只需要使用apt-get就可以轻松取得。在Shell下输入 apt-get source python2.7 即可以将Python的源码下载到当前目录。 然后我们就可以得到一个tar.gz的压缩包。 编译 我们进入源码文件夹后输入 ./configure make 然后就可以编译得到python。 当然，此时的Python不是调试版的，如果要编译调试版的Python，就需要再做一些东西。首先我们可以Google一下怎么做，貌似很多都是引用了源码README的一段话： command; e.g. “make OPT=-g” will build a debugging version of Python on most platforms. The default is OPT=-O; a value for OPT in the environment when the configure script is run overrides this default (likewise for CC; and the initial<a href=\"http://everet.org/2012/05/compile-debug-python-in-ubuntu.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p>在Windows调试Python解释器还是非常方便的，因为有强大的VS。</p><p>不过在Linux下可能有点不那么顺畅。但是稍微设置一下还是可以很方便地调试的。我们来看看在Ubuntu下怎么做。</p><h2>获取源码</h2><p>在Ubuntu下获取Python2.7的源码非常方便，只需要使用apt-get就可以轻松取得。在Shell下输入</p><blockquote><p>apt-get source python2.7</p></blockquote><p>即可以将Python的源码下载到当前目录。</p><p>然后我们就可以得到一个tar.gz的压缩包。</p><h2>编译</h2><p>我们进入源码文件夹后输入</p><blockquote><p>./configure</p><p>make</p></blockquote><p>然后就可以编译得到python。</p><p>当然，此时的Python不是调试版的，如果要编译调试版的Python，就需要再做一些东西。首先我们可以Google一下怎么做，貌似很多都是引用了源码README的一段话：<span id=\"more-992\"></span></p><blockquote><p>command; e.g. “make OPT=-g” will build a debugging version of Python<br />
+on most platforms. The default is OPT=-O; a value for OPT in the<br />
+environment when the configure script is run overrides this default<br />
+(likewise for CC; and the initial value for LIBS is used as the base<br />
+set of libraries to link with).</p></blockquote><p>好，我们现在使用</p><p>make OPT=-g</p><p>试试，嗯，确实用gdb可以调试了，不过单步的时候会在源码那里会一下在上一下在下地跳来跳去。而且查看变量值的时候很多变量显示的是&lt;optimized out&gt;。原因是编译的时候优化了。那优化选项什么时候被加进去了？</p><p>我们来看看configure生成的Makefile中的一段。</p><blockquote><p># Compiler options<br /><span style=\"color: #ff0000;\">OPT</span>= -DNDEBUG -g -fwrapv <span style=\"color: #ff0000;\">-O3</span> -Wall -Wstrict-prototypes<br />
+BASECFLAGS= -fno-strict-aliasing<br /><span style=\"color: #ff0000;\">CFLAGS</span>= $(BASECFLAGS) -g <span style=\"color: #ff0000;\">-O2</span> $(OPT) $(EXTRA_CFLAGS)<br />
+# Both CPPFLAGS and LDFLAGS need to contain the shell&#8217;s value for setup.py to<br />
+# be able to build extension modules using the directories specified in the<br />
+# environment variables<br />
+CPPFLAGS= -I. -IInclude -I$(srcdir)/Include</p></blockquote><p>可以看到OPT的-O3已经被我们的OPT=-g参数覆盖掉了，不过还有一个-O2在CFLAGS那里。呃，原来源码的README还是不可靠的啊。</p><p>我们现在来重新编译：</p><blockquote><p>make clean</p><p>make -j4 OPT=-g CFLAGS=-g</p></blockquote><p>这样编译的时候gcc就不会优化代码了。我们单步的时候就不会跳来跳去，变量的值也不会出现&lt;optimized out&gt;。</p><p>另外“-j4”选项是指开4个gcc编译，我是2核处理器，所以开4个gcc编译会快些。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-04-202058.png\" rel=\"lightbox[992]\"><img class=\"alignnone size-full wp-image-993\" title=\"Screenshot from 2012-05-04 20:20:58\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-04-202058.png\" alt=\" \" width=\"670\" height=\"648\" /></a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/compile-debug-python-in-ubuntu.html\">http://everet.org/2012/05/compile-debug-python-in-ubuntu.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/compile-debug-python-in-ubuntu.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/compile-debug-python-in-ubuntu.html/feed") (slash:comments nil "0")) (item nil (title nil "C++与Python混合编程") (link nil "http://everet.org/2012/05/cpp-python.html") (comments nil "http://everet.org/2012/05/cpp-python.html#comments") (pubDate nil "Thu, 03 May 2012 13:21:46 +0000") (dc:creator nil "Stupid ET") (category nil "我的代码") (category nil "我的分享") (category nil "C++") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=972") (description nil "混合语言策略可以汲取各语言之所长，让开发更加敏捷。混合语言策略在在应用得当时可以让程序更加优雅。 在《Unix编程艺术》中，Raymond说道： 混合语言是一种知识密集型（而不是编码密集型）的编程。要让它能够工作，我们不仅应该具备相当数量的多种语言应用知识，并且还需要具备能够判断这些语言在什么地方最适合、以及怎样把他们组合在一起的潜经验。 在混合语言编程中，我们遇到的第一个问题是如何需要让他们可以互相调用。也就是像C++可以调用Python的函数、Python又可以调用C++的函数。 对于C++和Python的混合编程主要有两种方式。 将C++写的模块编译成动态链接库，然后由Python主程序使用。这种一般是单方向的使用。 用C++主程序调用Python。然后Python中可以使用C++主程序的函数。 对于第一种方式非常简单，我们在此就不讨论了。我们将着重讨论第二种方式。 Simple Exampe of Mixing C++ and Python Code 我们举个例子。以下是C++主程序，做的事情是创建了一个空白的地图，然后加载Python模块构建地图。 Python写的地图生成程序：mapmaker.py。 我们可以仔细看看C++和Python代码中被高亮的行（代码是js高亮的，如果还没高亮请稍等页面加载完成）。 C++通过Boost库可以方便地和Python交互。当然我们还可以直接是用解释器提供的C API的和Python交互，不过这样会有非常多的累赘的代码。 C++和Python交互的关键之处是通过BOOST_PYTHON_MODULE来导出C++的函数和类，此外还需要执行initMyEngine这个函数来将这个模块注册进Python解释器。具体细节可以见代码。 对于 def(\"GetMapInstance\", GetMapInstance, return_value_policy&#60; reference_existing_object &#62;()); 中的return_value_policy&#60; reference_existing_object &#62;()可以参考我以前写的：http://blog.csdn.net/cedricporter/article/details/6828322 编译： g++ main.cpp -o map -I/usr/include/python2.7 -lboost_python -lpython2.7 在Windows上编译更容易，就不再罗嗦。 最后程序的输出，可以见到Python将地图由空白变成了一个三角形： Example 对于用合适的语言来做合适的事情，会让开发效率和产品质量有所提高。例如，在Emacs里面，就可以是用lisp来控制emacs，AutoCAD中也可以是用脚本来绘图。这样的用户接口更加灵活。 Other Scar 对于Scar这款3D太空：http://www.everet.org/2012/01/scar.html，是用C++和Python混合编程。在Scar中的2D界面库，有C++写成的基本元件，例如容器和按钮。我们可以在Python中组装C++元件来装配游戏的2D界面，然后返回一棵树的根节点给C++。于是像Scar中的水平仪，提示面板，地图，血条等等都是在Python中组装好的。此外，我们还可以在Python中编写元件的事件处理函数。这样做的好处是，我们在修改界面的时候，不再需要重新编译程序，只要修改脚本就好。 这样的开发会更加便捷而且应对变更的能力会更强。 ImaginationFactory Imagination Factory是在大一的时候写的一个图像处理程序，http://everet.org/2012/01/imagination-factory.html。 图像处理核心使用C++编写，界面使用C#/WPF编写。用WPF写界面即方便又便捷，可以轻松地实现很酷的效果。 Clover —— Computer Simulation<a href=\"http://everet.org/2012/05/cpp-python.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p>混合语言策略可以汲取各语言之所长，让开发更加敏捷。混合语言策略在在应用得当时可以让程序更加优雅。</p><p>在《Unix编程艺术》中，Raymond说道：</p><blockquote><p>混合语言是一种知识密集型（而不是编码密集型）的编程。要让它能够工作，我们不仅应该具备相当数量的多种语言应用知识，并且还需要具备能够判断这些语言在什么地方最适合、以及怎样把他们组合在一起的潜经验。</p></blockquote><p>在混合语言编程中，我们遇到的第一个问题是如何需要让他们可以互相调用。也就是像C++可以调用Python的函数、Python又可以调用C++的函数。</p><p>对于C++和Python的混合编程主要有两种方式。</p><ol><li>将C++写的模块编译成动态链接库，然后由Python主程序使用。这种一般是单方向的使用。</li><li>用C++主程序调用Python。然后Python中可以使用C++主程序的函数。</li></ol><p>对于第一种方式非常简单，我们在此就不讨论了。我们将着重讨论第二种方式。<span id=\"more-972\"></span></p><h2>Simple Exampe of Mixing C++ and Python Code</h2><p>我们举个例子。以下是C++主程序，做的事情是创建了一个空白的地图，然后加载Python模块构建地图。</p><pre class=\"brush: cpp; highlight: [56,60,74,87,92,95]; title: ; notranslate\">
+// website: http://EverET.org
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;boost/python.hpp&gt;
+
+class Map
+{
+public:
+    Map() : m_map(10, std::vector&lt;char&gt;(20, '.'))
+    {}
+
+    void SetPixel(int x, int y, int val)
+    {
+	m_map[y][x] = val;
+    }
+
+    void Print()
+    {
+	for (int i = 0; i &lt; m_map.size(); ++i)
+	{
+	    for (int j = 0; j &lt; m_map[i].size(); ++j)
+	    {
+		std::cout &lt;&lt; m_map[i][j];
+	    }
+	    std::cout &lt;&lt; std::endl;
+	}
+    }
+
+private:
+    std::vector&lt;std::vector&lt;char&gt; &gt; m_map;
+};
+
+void InitPython()
+{
+    Py_Initialize();
+
+    if(!Py_IsInitialized())
+    {
+	exit(-1);
+    }
+}
+
+// Get the instance of the map, Singleton Pattern
+// only one map instance exists
+Map* GetMapInstance()
+{
+    static Map* the_map = NULL;
+    if (!the_map)
+    {
+	the_map = new Map();
+    }
+    return the_map;
+}
+
+// export c++ function and class to python
+BOOST_PYTHON_MODULE(MyEngine)
+{
+    using namespace boost::python;
+    def(&quot;GetMapInstance&quot;, GetMapInstance,
+	return_value_policy&lt; reference_existing_object &gt;());
+    class_&lt;Map&gt;(&quot;Map&quot;, &quot;Game Map&quot;)
+    	.def(&quot;Print&quot;, &amp;Map::Print)
+    	.def(&quot;SetPixel&quot;, &amp;Map::SetPixel,
+	    (arg(&quot;x&quot;), &quot;y&quot;, &quot;val&quot;));
+}
+
+int main()
+{
+    try
+    {
+	using namespace boost::python;
+
+	InitPython();
+	initMyEngine(); // init MyEngine Module
+
+	// Add current path to sys.path. You have to
+	// do this in linux. While in Windows,
+	// current path is already in sys.path.
+	object main_module = import( &quot;__main__&quot; );
+	object main_namespace = main_module.attr( &quot;__dict__&quot; );
+	object ignored = exec(
+	    &quot;import sys\\n&quot;
+	    &quot;sys.path.append('.')\\n&quot;, main_namespace );
+
+	Map* map = GetMapInstance();
+	std::cout &lt;&lt; &quot;Before python\\n&quot;;
+	map-&gt;Print();
+
+	// load python to design the map
+	object mapMaker = import(&quot;mapmaker&quot;);
+	object makeMap = mapMaker.attr(&quot;make_map&quot;);
+	makeMap();
+
+	std::cout &lt;&lt; &quot;\\nAfter python\\n&quot;;
+	map-&gt;Print();
+    }
+    catch (...)
+    {
+	PyErr_Print();
+    }
+
+    return 0;
+}
+</pre><p>Python写的地图生成程序：mapmaker.py。</p><pre class=\"brush: python; highlight: [1,4]; title: mapmaker.py; notranslate\">
+import MyEngine
+import random
+
+def make_map():
+    the_map = MyEngine.GetMapInstance()
+    n = 10
+    for i in range(n):
+        for j in range(10 - i, 10 + i - 1):
+            the_map.SetPixel(j, i, ord('*'))
+</pre><p>我们可以仔细看看C++和Python代码中被高亮的行（代码是js高亮的，如果还没高亮请稍等页面加载完成）。</p><p>C++通过Boost库可以方便地和Python交互。当然我们还可以直接是用解释器提供的C API的和Python交互，不过这样会有非常多的累赘的代码。</p><p>C++和Python交互的关键之处是通过BOOST_PYTHON_MODULE来导出C++的函数和类，此外还需要执行initMyEngine这个函数来将这个模块注册进Python解释器。具体细节可以见代码。</p><p>对于</p><blockquote><pre> def(\"GetMapInstance\", GetMapInstance,
+	return_value_policy&lt; reference_existing_object &gt;());</pre></blockquote><p>中的return_value_policy&lt; reference_existing_object &gt;()可以参考我以前写的：<a href=\"http://blog.csdn.net/cedricporter/article/details/6828322\">http://blog.csdn.net/cedricporter/article/details/6828322</a></p><h2>编译：</h2><blockquote><p>g++ main.cpp -o map -I/usr/include/python2.7 -lboost_python -lpython2.7</p></blockquote><p>在Windows上编译更容易，就不再罗嗦。</p><p>最后程序的输出，可以见到Python将地图由空白变成了一个三角形：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-03-210111.png\" rel=\"lightbox[972]\"><img class=\"alignnone size-full wp-image-978\" title=\"Screenshot from 2012-05-03 21:01:11\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-03-210111.png\" alt=\" \" width=\"280\" height=\"434\" /></a></p><h2>Example</h2><p>对于用合适的语言来做合适的事情，会让开发效率和产品质量有所提高。例如，在Emacs里面，就可以是用lisp来控制emacs，AutoCAD中也可以是用脚本来绘图。这样的用户接口更加灵活。</p><h2>Other</h2><h3>Scar</h3><p>对于Scar这款3D太空：<a href=\"http://www.everet.org/2012/01/scar.html\">http://www.everet.org/2012/01/scar.html</a>，是用C++和Python混合编程。在Scar中的2D界面库，有C++写成的基本元件，例如容器和按钮。我们可以在Python中组装C++元件来装配游戏的2D界面，然后返回一棵树的根节点给C++。于是像Scar中的水平仪，提示面板，地图，血条等等都是在Python中组装好的。此外，我们还可以在Python中编写元件的事件处理函数。这样做的好处是，我们在修改界面的时候，不再需要重新编译程序，只要修改脚本就好。</p><p>这样的开发会更加便捷而且应对变更的能力会更强。</p><h3>ImaginationFactory</h3><p>Imagination Factory是在大一的时候写的一个图像处理程序，<a href=\"http://everet.org/2012/01/imagination-factory.html\">http://everet.org/2012/01/imagination-factory.html</a>。</p><p>图像处理核心使用C++编写，界面使用C#/WPF编写。用WPF写界面即方便又便捷，可以轻松地实现很酷的效果。</p><h3>Clover —— Computer Simulation Origami</h3><p>Clover是一款计算机模拟折纸的程序，主要程序使用C#编写，内嵌Python解释器，可以用Python折纸。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/cpp-python.html\">http://everet.org/2012/05/cpp-python.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/cpp-python.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/cpp-python.html/feed") (slash:comments nil "0")) (item nil (title nil "论程序之帮助文档") (link nil "http://everet.org/2012/05/help.html") (comments nil "http://everet.org/2012/05/help.html#comments") (pubDate nil "Wed, 02 May 2012 16:35:31 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Design") (guid ((isPermaLink . "false")) "http://everet.org/?p=956") (description nil "每个程序都拥有自己的生命，每个程序都应该拥有自己的帮助文档。一个好的帮助文档可以让一个程序的寿命延长。当然，有了一个好的帮助文档还不够，还需要友好快捷的帮助方式。 Shell 我们在shell下可以使用各种小工具，像ls，ps，grep等，当我们需要查看ls的帮助，可以是键入man ls，至于什么是man，我们可以输入man man，就可以看到man的帮助了。 这给用户提供了一种统一而便捷的帮助接口。 Vim Vim的帮助主要是通过:help， 例如，可以输入:help x，查看x按键的帮助。如果不指定主题，:help默认打开一个总揽的帮助窗口。 Python Python交互式解释器除了python自带的，还有一个非常好用的交互环境是iPython，ipython &#8211; Tools for Interactive Computing in Python。 Python的文档是和对象绑定在一起的，每个对象都有一个__doc__的属性，我们可以通过这个属性查看这个对象的文档，例如print str.__doc__，当然，如果我们需要更详细的帮助文档，我们可以help(str)，查看str的帮助。如果我们想了解一下os模块，我们可以键入help(os)，就可以看到关于os的详细的帮助文档。 Python是个神奇的语言，交互解释器也是一个神奇的环境。 Emacs emacs里面有非常详细的各种文档，我们可以是用 Ctrl+h    i   g 打开它，然后阅读帮助文档。 例如，我们想知道emacs的调试工具的使用，我们可以键入  Ctrl+h   i   g   (emacs) Debuggers   RET  ，然后就可以看到像gdb，pdb的帮助手册。这个是非常方面的。 如果我们想知道某个按键具体是做什么的，我们可以 Ctrl+h   k ，然后按下按键，例如 Ctrl+x   Ctrl+f  ,就会打开如下的帮助： C-x C-f runs the command ido-find-file, which is an interactive compiled Lisp function. It is bound to,<a href=\"http://everet.org/2012/05/help.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p>每个程序都拥有自己的生命，每个程序都应该拥有自己的帮助文档。一个好的帮助文档可以让一个程序的寿命延长。当然，有了一个好的帮助文档还不够，还需要友好快捷的帮助方式。</p><h2>Shell</h2><p>我们在shell下可以使用各种小工具，像ls，ps，grep等，当我们需要查看ls的帮助，可以是键入man ls，至于什么是man，我们可以输入man man，就可以看到man的帮助了。</p><p>这给用户提供了一种统一而便捷的帮助接口。</p><h2>Vim</h2><p>Vim的帮助主要是通过:help， 例如，可以输入:help x，查看x按键的帮助。如果不指定主题，:help默认打开一个总揽的帮助窗口。</p><h2>Python</h2><p>Python交互式解释器除了python自带的，还有一个非常好用的交互环境是iPython，ipython &#8211; Tools for Interactive Computing in Python。</p><p>Python的文档是和对象绑定在一起的，每个对象都有一个__doc__的属性，我们可以通过这个属性查看这个对象的文档，例如print str.__doc__，当然，如果我们需要更详细的帮助文档，我们可以help(str)，查看str的帮助。如果我们想了解一下os模块，我们可以键入help(os)，就可以看到关于os的详细的帮助文档。</p><p>Python是个神奇的语言，交互解释器也是一个神奇的环境。</p><h2>Emacs</h2><p>emacs里面有非常详细的各种文档，我们可以是用<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span>  <span style=\"color: #3366ff; background-color: #fac;\"> i </span><span style=\"color: #3366ff; background-color: #fac;\"> g </span>打开它，然后阅读帮助文档。</p><p>例如，我们想知道emacs的调试工具的使用，我们可以键入 <span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> i </span><span style=\"color: #3366ff; background-color: #fac;\"> g </span><span style=\"color: #3366ff; background-color: #fac;\"> (emacs) Debuggers </span><span style=\"color: #3366ff; background-color: #fac;\"> RET </span> ，然后就可以看到像gdb，pdb的帮助手册。这个是非常方面的。</p><p>如果我们想知道某个按键具体是做什么的，我们可以<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> k </span>，然后按下按键，例如<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+x </span><span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+f </span> ,就会打开如下的帮助：<span id=\"more-956\"></span></p><blockquote><p>C-x C-f runs the command ido-find-file, which is an interactive<br />
+compiled Lisp function.</p><p>It is bound to, C-x C-f,.</p><p>(ido-find-file)</p><p>Edit file with name obtained via minibuffer.<br />
+The file is displayed according to `ido-default-file-method&#8217; &#8212; the<br />
+default is to show it in the same window, unless it is already<br />
+visible in another frame.<br />
+。。。。。。</p></blockquote><p>再例如，我们想知道<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+c </span>开头，开头的按键的有哪些，我们可以输入<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+c </span><span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span>，然后就可以看到Ctrl+c开头的按键们的帮助。</p><p>这是一种非常友好的帮助功能。此外，如果我们对某些函数不是很熟悉，我们可以按下<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> f </span>，然后输入函数名，就可以看到这个函数的帮助。</p><h2>总结</h2><p>像这种级别的帮助方式，在其他软件是很难找到的。其他软件的一般做法是有一个快捷键表，然后我们就要自己去那个表找对应的快捷键查看帮助（Eclipse就是一个很好的例子），这样软件实现起来相对容易一些，但是对于用户是不友好的，浪费用户时间和打击用户学习的兴趣。</p><p>记得很久以前的Windows对话框，在最大化最小化关闭按钮旁边会有一个?的按钮，我们点了那个按钮，接着去点其他东西就可以查看那个东西的帮助，这个是对于GUI一个很棒的帮助方式。</p><p>对于一个友好的帮助方式，总是可以让用户轻易的找到想知道的按键，按钮，功能的帮助文档，例如提供搜索，通过help(XXX)，man XXX或者Ctrl+h，“？”按钮等手段直接找到当前功能及周边功能的帮助。而一个差劲的帮助方式，是强迫用户自己去一个巨大的手册里自己寻找帮助。</p><p>当然，要做到一个友好的帮助方式，我们在程序设计的时候就必须得考虑用户帮助的问题。</p><p>例如更好地建立功能与帮助手册之间的关系，如何找到功能对应的快捷键，如何找到快捷键对应的功能，如何找到功能相关的其他功能的帮助，如果动态添加了模块，这些模块的帮助文档如何自动加入到当前的帮助环境中，这些问题都值得我们仔细斟酌。</p><p>如果不提前考虑好对于帮助的扩展，那么在后期强加进去帮助方式容易会打乱代码的结构。</p><p>所有的帮助信息都应该在用户需要的时候自动出现。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/help.html\">http://everet.org/2012/05/help.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/help.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/help.html/feed") (slash:comments nil "0")) (item nil (title nil "发现一个很好玩的Python网站") (link nil "http://everet.org/2012/05/pythonchallenge.html") (comments nil "http://everet.org/2012/05/pythonchallenge.html#comments") (pubDate nil "Tue, 01 May 2012 18:09:57 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=953") (description nil "http://www.pythonchallenge.com/ 又是一个解题过关的网站，不过这次题目是Python的，有兴趣的同学们一起上吧。 豆瓣的介绍： 来玩pythonchallenge吧，理由如下： 0、Tim Peters的理由：”I&#8217;ve been using Python since 1991, and while I&#8217;ve always enjoyed it, I have to confess this is the most Python fun I&#8217;ve had this century! Excellent work. Thank you!” 1、沈大仙的理由：”说到这里, 想起我们部门新来两位同事, 在使用 Python 做项目之前, 先沉下心来做了两周的 Python Challenge, 把 Python 模了个透, 结果两周后程序写出来相当漂亮, 甚至让我这种老牌 Python 程序员跌破眼镜, 与我周围的同事立马有了境界上的区分。” 2、给你的理由：能在短时间内完成全部33题，这可以证明你很聪明。 3、自己的理由：俺连滚带爬好不容易做到了第27题，沮丧地看到了自己的笨，但从好处想，这至少可以证明俺有毅力，嘿嘿。 4、自私的理由：憋死在第27题，等老大们来给个提示拉俺一把吧。 刚刚很快做了几道题，发现前面的题目貌似很简单，后边据说很难，不过发现凌晨2点多了，明天上课，于是决定去睡觉了。明日再战～<a href=\"http://everet.org/2012/05/pythonchallenge.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p><a href=\"http://www.pythonchallenge.com/\" target=\"_blank\">http://www.pythonchallenge.com/</a></p><p>又是一个解题过关的网站，不过这次题目是Python的，有兴趣的同学们一起上吧。</p><p>豆瓣的介绍：</p><blockquote><p>来玩pythonchallenge吧，理由如下：<br />
+0、Tim Peters的理由：”I&#8217;ve been using Python since 1991, and while I&#8217;ve always enjoyed it, I have to confess this is the most Python fun I&#8217;ve had this century! Excellent work. Thank you!”<br />
+1、沈大仙的理由：”说到这里, 想起我们部门新来两位同事, 在使用 Python 做项目之前, 先沉下心来做了两周的 Python Challenge, 把 Python 模了个透, 结果两周后程序写出来相当漂亮, 甚至让我这种老牌 Python 程序员跌破眼镜, 与我周围的同事立马有了境界上的区分。”<br />
+2、给你的理由：能在短时间内完成全部33题，这可以证明你很聪明。<br />
+3、自己的理由：俺连滚带爬好不容易做到了第27题，沮丧地看到了自己的笨，但从好处想，这至少可以证明俺有毅力，嘿嘿。<br />
+4、自私的理由：憋死在第27题，等老大们来给个提示拉俺一把吧。</p></blockquote><p><span id=\"more-953\"></span><br />
+刚刚很快做了几道题，发现前面的题目貌似很简单，后边据说很难，不过发现凌晨2点多了，明天上课，于是决定去睡觉了。明日再战～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/pythonchallenge.html\">http://everet.org/2012/05/pythonchallenge.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/pythonchallenge.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/pythonchallenge.html/feed") (slash:comments nil "0")) (item nil (title nil "临近大三结束的一些杂乱的思绪") (link nil "http://everet.org/2012/04/mass-thoughts.html") (comments nil "http://everet.org/2012/04/mass-thoughts.html#comments") (pubDate nil "Sat, 28 Apr 2012 17:13:05 +0000") (dc:creator nil "Stupid ET") (category nil "我的生活") (guid ((isPermaLink . "false")) "http://everet.org/?p=944") (description nil "今天博客主页改版终于告一段落，突然发现很久没有更新博客的文章了，于是想写把一些凌乱的思绪记录到博客中。以前的很多想法都是用笔写下的，今天就当作例外吧。不过发现写在博客里可以搜索，写在本子里，只能人工翻阅查找，不过人工翻阅也会帮助回忆以前做了什么。 我写的字很难看，于是想在写日记的时候练字，想起中小学时被老师逼着练字是一件很痛苦的事情，没想到到了大学，写字竟成了一种享受。 很多程序员写的字比小学一年级的小朋友还更加扭曲，这让我不禁为汉字感到悲哀。作为中国人都写不好汉字，这是什么情况呢？ 想起一个无关本文的笑话： 某程序员对书法十分感兴趣，退休后决定在这方面有所建树。于是花重金购买了上等的文房四宝。一日，饭后突生雅兴，一番磨墨拟纸，并点上了上好的檀香，颇有王羲之风范，又具颜真卿气势，定神片刻，泼墨挥毫，郑重地写下一行字：hello world。 或许每个人的追求的不一样，有的人想，只要我写的字别人看得懂就好了（我承认我曾经也这么想过，所以致使我现在的字还是很难看），有的人想，反正我都是用电脑打字，基本上不会有机会写字。 不过可喜的是，发现读软件的还是有写字非常好的，例如 洪科 ，他的字就写的非常棒，一年多以前他帮我的写的箴言我还挂在书桌上。 写字很多时候是与人交流，那么我们是想用美好的东西与人交流还是用恶心的东西与人交流呢？ 优美的字让看的人心情舒畅，给予人好的用户体验，为别人带来快乐，是站在别人的角度考虑问题。 这几天我把主页由黑色换成了白色，其中有诸多的原因。我经常使用的各种软件，都被我换成了黑色背景，因为我会在阴暗的环境下长时间对着电脑（经常是凌晨，所以很阴暗-_-），黑色的背景在黑夜中让眼睛更加舒适。不过在少数几次白天去图书馆写代码的时候，发现黑色背景导致屏幕反光更为严重，甚至都无法看清屏幕了。 屠文翔同学一直喜欢白色背景，他指出像我博客这种黑色的主题，第一眼看上去可能会很酷，但是看久了很容易生厌，而且并不是每个人都喜欢黑色喜欢在深夜看电脑。屠文翔同学所言极是。而且现在基本所有的网站都是白色的，有一次我环境光线十分充足的情况下去了Alienware的网页，顿时觉得黑色的网页让人很不适。可见黑色网页不适合大多数情况。 于是在昨晚心血来潮就决定把主页换成白色，这样或许让读者会感觉更好一些，或许用户体验会更好一些。 改主页对于我来说不是一件容易的事，我对html，css，js也不是很熟，修改主题显得进度非常缓慢，不过raymond也推荐学习HTML，所以我还是很努力地花了一天时间来修改主题，期间卡住的时候也向屠文翔同学求助，所以问题都可以很快得到解决。于是大部分时间都是花在了微调和浏览器兼容上面。 在改版过程中，我找到了两个比较顺眼的主题，一个看上去挺漂亮，一个看上去挺简陋的但是可以支持各种设备。于是我选了第一个主题来修改，在经过了大半天的努力，在看上去完成了的时候，我开始打开过去写的文章来围观，发现看上去挺漂亮的，字体大气舒适（其实是字体很大），咋一眼看上去挺漂亮的页面，在我阅读的时候，发现非常的困难。因为主题会适应屏幕，它会撑满整个屏幕，所以文章就会很宽，阅读的时候，眼球就需要左右移动，好累啊。这时候我终于明白了，为什么那么多主题都只是占了窗口中间的一个固定宽度的位置来显示文章，因为这样阅读的时候，恰好眼睛可以看完一行，所以眼睛基本不需要移动，只要滚动鼠标就可以阅读了，这样的体验会更加舒适。 于是我扔掉了基本改好的第一个主题，开始对第二个看上去很简陋的主题动刀。于是就变成了现在这样的白色外观了。 于是今天收获的东西是明白了有些看上去很美好的东西，其实一点都不好用，外观的炫酷不是最重要的，重要的内在的体验。 今天的杂想也告一段落，也要想想未来这段时间的计划。 现在挤压着许多的书要看，我知道就算我未来两个月全部用来看书也看不完，而且也不可能所有时间看书，这样会很底效，看完很容易就忘了。 目前看来，最重要的实用技术方面的东西就是看Apache和Python的实现，这个估计会花费很多时间，而且作为一个网络菜鸟，我还需要看很多很多网络方面的书。再作为一个程序菜鸟，我需要看很多设计方面书，最后作为一个算法菜鸟，我还需要努力读懂几本算法书。 唉，我知道我做的计划基本不会实现的，不过有个计划还是可以指导我需要做什么。 最后，还需要练体能，看看有没有机会骑车去西藏，哈哈～ 本文链接：http://everet.org/2012/04/mass-thoughts.html &#124; © EverET.org 本文评论：7 comments") (content:encoded nil "<p>今天博客主页改版终于告一段落，突然发现很久没有更新博客的文章了，于是想写把一些凌乱的思绪记录到博客中。以前的很多想法都是用笔写下的，今天就当作例外吧。不过发现写在博客里可以搜索，写在本子里，只能人工翻阅查找，不过人工翻阅也会帮助回忆以前做了什么。</p><p>我写的字很难看，于是想在写日记的时候练字，想起中小学时被老师逼着练字是一件很痛苦的事情，没想到到了大学，写字竟成了一种享受。</p><p>很多程序员写的字比小学一年级的小朋友还更加扭曲，这让我不禁为汉字感到悲哀。作为中国人都写不好汉字，这是什么情况呢？<span id=\"more-944\"></span></p><p>想起一个无关本文的笑话：</p><blockquote><p>某程序员对书法十分感兴趣，退休后决定在这方面有所建树。于是花重金购买了上等的文房四宝。一日，饭后突生雅兴，一番磨墨拟纸，并点上了上好的檀香，颇有王羲之风范，又具颜真卿气势，定神片刻，泼墨挥毫，郑重地写下一行字：hello world。</p></blockquote><p>或许每个人的追求的不一样，有的人想，只要我写的字别人看得懂就好了（我承认我曾经也这么想过，所以致使我现在的字还是很难看），有的人想，反正我都是用电脑打字，基本上不会有机会写字。</p><p>不过可喜的是，发现读软件的还是有写字非常好的，例如 <a href=\"http://zhke.name/\" target=\"_blank\">洪科</a> ，他的字就写的非常棒，一年多以前他帮我的写的箴言我还挂在书桌上。</p><p>写字很多时候是与人交流，那么我们是想用美好的东西与人交流还是用恶心的东西与人交流呢？</p><p>优美的字让看的人心情舒畅，给予人好的用户体验，为别人带来快乐，是站在别人的角度考虑问题。</p><p>这几天我把主页由黑色换成了白色，其中有诸多的原因。我经常使用的各种软件，都被我换成了黑色背景，因为我会在阴暗的环境下长时间对着电脑（经常是凌晨，所以很阴暗-_-），黑色的背景在黑夜中让眼睛更加舒适。不过在少数几次白天去图书馆写代码的时候，发现黑色背景导致屏幕反光更为严重，甚至都无法看清屏幕了。</p><p><a href=\"http://kidsang.com/\" target=\"_blank\">屠文翔同学</a>一直喜欢白色背景，他指出像我博客这种黑色的主题，第一眼看上去可能会很酷，但是看久了很容易生厌，而且并不是每个人都喜欢黑色喜欢在深夜看电脑。<a href=\"http://kidsang.com/\" target=\"_blank\">屠文翔同学</a>所言极是。而且现在基本所有的网站都是白色的，有一次我环境光线十分充足的情况下去了<a href=\"http://china.dell.com/cn/p/alienware-laptops?~ck=anav\" target=\"_blank\">Alienware</a>的网页，顿时觉得黑色的网页让人很不适。可见黑色网页不适合大多数情况。</p><p>于是在昨晚心血来潮就决定把主页换成白色，这样或许让读者会感觉更好一些，或许用户体验会更好一些。</p><p>改主页对于我来说不是一件容易的事，我对html，css，js也不是很熟，修改主题显得进度非常缓慢，不过<a href=\"http://everet.org/2012/03/how-to-become-a-hacker.html\">raymond也推荐学习HTML</a>，所以我还是很努力地花了一天时间来修改主题，期间卡住的时候也向屠文翔同学求助，所以问题都可以很快得到解决。于是大部分时间都是花在了微调和浏览器兼容上面。</p><p>在改版过程中，我找到了两个比较顺眼的主题，一个看上去挺漂亮，一个看上去挺简陋的但是可以支持各种设备。于是我选了第一个主题来修改，在经过了大半天的努力，在看上去完成了的时候，我开始打开过去写的文章来围观，发现看上去挺漂亮的，字体大气舒适（其实是字体很大），咋一眼看上去挺漂亮的页面，在我阅读的时候，发现非常的困难。因为主题会适应屏幕，它会撑满整个屏幕，所以文章就会很宽，阅读的时候，眼球就需要左右移动，好累啊。这时候我终于明白了，为什么那么多主题都只是占了窗口中间的一个固定宽度的位置来显示文章，因为这样阅读的时候，恰好眼睛可以看完一行，所以眼睛基本不需要移动，只要滚动鼠标就可以阅读了，这样的体验会更加舒适。</p><p>于是我扔掉了基本改好的第一个主题，开始对第二个看上去很简陋的主题动刀。于是就变成了现在这样的白色外观了。</p><p>于是今天收获的东西是明白了有些看上去很美好的东西，其实一点都不好用，外观的炫酷不是最重要的，重要的内在的体验。</p><p>今天的杂想也告一段落，也要想想未来这段时间的计划。</p><p>现在挤压着许多的书要看，我知道就算我未来两个月全部用来看书也看不完，而且也不可能所有时间看书，这样会很底效，看完很容易就忘了。</p><p>目前看来，最重要的实用技术方面的东西就是看Apache和Python的实现，这个估计会花费很多时间，而且作为一个网络菜鸟，我还需要看很多很多网络方面的书。再作为一个程序菜鸟，我需要看很多设计方面书，最后作为一个算法菜鸟，我还需要努力读懂几本算法书。</p><p>唉，我知道我做的计划基本不会实现的，不过有个计划还是可以指导我需要做什么。</p><p>最后，还需要练体能，看看有没有机会骑车去西藏，哈哈～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/mass-thoughts.html\">http://everet.org/2012/04/mass-thoughts.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/mass-thoughts.html#comments\">7 comments</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/04/mass-thoughts.html/feed") (slash:comments nil "7")) (item nil (title nil "Python的“黑暗魔法”，两行解一元一次方程") (link nil "http://everet.org/2012/04/linear-equations-solvers-in-python.html") (comments nil "http://everet.org/2012/04/linear-equations-solvers-in-python.html#comments") (pubDate nil "Tue, 24 Apr 2012 12:06:02 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=935") (description nil "无意看到一个大神写的《Linear equations solver in 3 lines (Python recipe)》，Python解一元一次方程只需要三行就完成了，确实很强悍啊。 我们来围观一下： 说到底呢，这个段代码的关键是利用了复数。 第一步： 2 * x + 233 = x * 8 + 3 变成 2 * x + 233 -(x * 8 + 3) 然后把x变成虚数1j 然后变成 2 * 1j + 233 -(1j * 8 + 3) 通过eval算出结果为230-6j 因为我们知道这个表达式结果为0，而且j也相当于x。 所以问题变成了：230-6j=0，也就是230-6x=0。 最后x = - 230 / 6 =<a href=\"http://everet.org/2012/04/linear-equations-solvers-in-python.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p>无意看到一个大神写的《<a href=\"http://code.activestate.com/recipes/365013-linear-equations-solver-in-3-lines/\" target=\"_blank\">Linear equations solver in 3 lines (Python recipe)</a>》，Python解一元一次方程只需要三行就完成了，确实很强悍啊。</p><p>我们来围观一下：<br /><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-195023.png\" rel=\"lightbox[935]\"><img title=\"Screenshot at 2012-04-24 19:50:23\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-195023.png\" alt=\" \" width=\"542\" height=\"134\" /></a></p><pre>说到底呢，这个段代码的关键是利用了复数。
+第一步：
+2 * x + 233 = x * 8 + 3
+变成
+2 * x + 233 -(x * 8 + 3)
+然后把x变成虚数1j
+然后变成
+2 * 1j + 233 -(1j * 8 + 3)
+通过eval算出结果为230-6j
+因为我们知道这个表达式结果为0，而且j也相当于x。
+所以问题变成了：230-6j=0，也就是230-6x=0。
+最后x = - 230 / 6 = 38.33333333336。</pre><p><span id=\"more-935\"></span></p><pre></pre><p>这里的核心是用到了Python的<span style=\"color: #3366ff;\">黑暗魔法eval</span>，eval的第一个参数是表达式，第二个参数是命名空间，也就是把 x = 1j 通过第二个参数把一些值放进去。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-200440.png\" rel=\"lightbox[935]\"><img class=\"alignnone size-full wp-image-937\" title=\"Screenshot at 2012-04-24 20:04:40\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-200440.png\" alt=\" \" width=\"293\" height=\"82\" /></a></p><p>神奇的求解函数：</p><pre class=\"brush: python; title: ; notranslate\">
+def s(eq, var='x'):
+    r = eval(eq.replace('=', '-(') + ')', {var:1j})
+    return -r.real / r.imag
+</pre><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/linear-equations-solvers-in-python.html\">http://everet.org/2012/04/linear-equations-solvers-in-python.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/linear-equations-solvers-in-python.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/04/linear-equations-solvers-in-python.html/feed") (slash:comments nil "0")) (item nil (title nil "Ubuntu上的屏幕截图") (link nil "http://everet.org/2012/04/ubuntu-screenshot.html") (comments nil "http://everet.org/2012/04/ubuntu-screenshot.html#comments") (pubDate nil "Sun, 22 Apr 2012 17:26:45 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Linux") (category nil "Ubuntu") (guid ((isPermaLink . "false")) "http://everet.org/?p=930") (description nil "偶们都是被QQ截图宠坏的一代，QQ截图确实很好用，不过在Linux下就木有了，于是该怎么办呢。 我们可以使用系统自带的截图，默认按Print Screen全屏截图或者Alt + Print Screen截活动窗口。 那如果我们想截一个区域，就要打开screenshot，然后选中Select area to grab，非常地麻烦。 好，现在我们来添加快捷键Ctrl+Alt+A来模拟QQ截图。我们在系统设置中的键盘设置中打开快捷键。添加一个自定义快捷键。 Command填上：gnome-screenshot -a ，也就是区域截图模式。 搞定。 本文链接：http://everet.org/2012/04/ubuntu-screenshot.html &#124; © EverET.org 本文评论：No comment") (content:encoded nil "<p>偶们都是被QQ截图宠坏的一代，QQ截图确实很好用，不过在Linux下就木有了，于是该怎么办呢。</p><p>我们可以使用系统自带的截图，默认按Print Screen全屏截图或者Alt + Print Screen截活动窗口。</p><p>那如果我们想截一个区域，就要打开screenshot，然后选中Select area to grab，非常地麻烦。</p><p><span id=\"more-930\"></span></p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-011846.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-931\" title=\"Screenshot at 2012-04-23 01:18:46\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-011846.png\" alt=\" \" width=\"466\" height=\"381\" /></a></p><p>好，现在我们来添加快捷键Ctrl+Alt+A来模拟QQ截图。我们在系统设置中的键盘设置中打开快捷键。添加一个自定义快捷键。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012037.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-932\" title=\"Screenshot at 2012-04-23 01:20:37\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012037.png\" alt=\" \" width=\"742\" height=\"485\" /></a></p><p>Command填上：gnome-screenshot -a ，也就是区域截图模式。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012047.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-933\" title=\"Screenshot at 2012-04-23 01:20:47\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012047.png\" alt=\" \" width=\"253\" height=\"144\" /></a></p><p>搞定。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/ubuntu-screenshot.html\">http://everet.org/2012/04/ubuntu-screenshot.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/ubuntu-screenshot.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/04/ubuntu-screenshot.html/feed") (slash:comments nil "0")) (item nil (title nil "Python打印字符三角形") (link nil "http://everet.org/2012/04/python-print-triangle.html") (comments nil "http://everet.org/2012/04/python-print-triangle.html#comments") (pubDate nil "Wed, 18 Apr 2012 14:05:35 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=924") (description nil "想起初中老师教Pascal的时候，就会有各种打印字符三角形的程序让我们写。 现在发现在Python下竟是如此的容易。可惜当年还不知道世界上有种语言叫Python。 本文链接：http://everet.org/2012/04/python-print-triangle.html &#124; © EverET.org 本文评论：2 comments") (content:encoded nil "<p>想起初中老师教Pascal的时候，就会有各种打印字符三角形的程序让我们写。</p><p>现在发现在Python下竟是如此的容易。可惜当年还不知道世界上有种语言叫Python。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/image9.png\" rel=\"lightbox\"><img style=\"background-image: none; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;\" title=\"image\" src=\"http://everet.org/wp-content/uploads/2012/04/image_thumb9.png\" alt=\"image\" width=\"276\" height=\"208\" border=\"0\" /></a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/python-print-triangle.html\">http://everet.org/2012/04/python-print-triangle.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/python-print-triangle.html#comments\">2 comments</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/04/python-print-triangle.html/feed") (slash:comments nil "2")))) ("Python根据图片生成字符画" "<p>字符画很好玩，我们来看看怎样将一张图片变成字符画。</p><p>我们首先将图片变成黑白的，那么每个像素的取值范围为：0-255.</p><p>然后我们将0-255映射到0-14的范围上，然后用如下字符代替：</p><p>color = ‘MNHQ$OC?7&gt;!:-;.’</p><p>也就是像素为0的点用“M”表示，像素为14的点用“.”表示。</p><p>原理非常的简单，我们用Python来编写的话也非常的简单。只要借助PIL，就可以很轻松地在Python中处理图像。</p><p>我们来看一段代码：<span id=\"more-1012\"></span></p><pre class=\"brush: python; title: ; notranslate\">
+import Image
+color = 'MNHQ$OC?7&gt;!:-;.'
+def to_html(func):
+html_head = '''
+&lt;html&gt;
+&lt;head&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+body {font-family:Monospace; font-size:5px;}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt; '''
+html_tail = '&lt;/body&gt;&lt;/html&gt;'
+def wrapper(img):
+pic_str = func(img)
+pic_str = ''.join(l + ' &lt;br/&gt;' for l in pic_str.splitlines())
+return html_head + pic_str + html_tail
+return wrapper
+@to_html
+def make_char_img(img):
+pix = img.load()
+pic_str = ''
+width, height = img.size
+for h in xrange(height):
+for w in xrange(width):
+pic_str += color[int(pix[w, h]) * 14 / 255]
+pic_str += '\\n'
+return pic_str
+def preprocess(img_name):
+img = Image.open(img_name)
+w, h = img.size
+m = max(img.size)
+delta = m / 200.0
+w, h = int(w / delta), int(h / delta)
+img = img.resize((w, h))
+img = img.convert('L')
+return img
+def save_to_file(filename, pic_str):
+outfile = open(filename, 'w')
+outfile.write(pic_str)
+outfile.close()
+def main():
+img = preprocess('6.jpg')
+pic_str = make_char_img(img)
+save_to_file('char.html', pic_str)
+if __name__ == '__main__':
+main()
+</pre><p>整个程序的核心都在下面两行，一个是字符的色阶表，一个是映射公式。</p><blockquote><pre>color = 'MNHQ$OC?7&gt;!:-;.'
+pic_str += color[int(pix[w, h]) * 14 / 255]</pre></blockquote><p>效果如下：</p><p>原图：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-06-203607.png\" rel=\"lightbox[1012]\"><img title=\"Screenshot from 2012-05-06 20:36:07\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-06-203607.png\" alt=\" \" width=\"474\" height=\"305\" /></a></p><p>字符画：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/f8e22973ddcb35e46163c796bce096fcScreenshot-at-2012-04-25-161736.png\" rel=\"lightbox[1012]\"><img class=\"alignnone size-full wp-image-1013\" title=\"f8e22973ddcb35e46163c796bce096fcScreenshot at 2012-04-25 16:17:36\" src=\"http://everet.org/wp-content/uploads/2012/05/f8e22973ddcb35e46163c796bce096fcScreenshot-at-2012-04-25-161736.png\" alt=\" \" width=\"410\" height=\"707\" /></a></p><p>在线的图片字符画生成请见：<a href=\"http://everet.org:1758/\">http://everet.org:1758/</a></p><p>源码：<a href=\"https://github.com/cedricporter/et-python/tree/master/web%20server/webpy\">https://github.com/cedricporter/et-python/tree/master/web%20server/webpy</a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/python-ascii-art.html\">http://everet.org/2012/05/python-ascii-art.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/python-ascii-art.html#comments\">2 comments</a></small></p>" "http://everet.org/2012/05/python-ascii-art.html" (20390 29579) old 1 nil nil ((title nil "Python根据图片生成字符画") (link nil "http://everet.org/2012/05/python-ascii-art.html") (comments nil "http://everet.org/2012/05/python-ascii-art.html#comments") (pubDate nil "Sun, 06 May 2012 12:50:19 +0000") (dc:creator nil "Stupid ET") (category nil "我的代码") (category nil "我的分享") (category nil "Python") (category nil "图像处理") (guid ((isPermaLink . "false")) "http://everet.org/?p=1012") (description nil "字符画很好玩，我们来看看怎样将一张图片变成字符画。 我们首先将图片变成黑白的，那么每个像素的取值范围为：0-255. 然后我们将0-255映射到0-14的范围上，然后用如下字符代替： color = &#8216;MNHQ$OC?7&#62;!:-;.&#8217; 也就是像素为0的点用“M”表示，像素为14的点用“.”表示。 原理非常的简单，我们用Python来编写的话也非常的简单。只要借助PIL，就可以很轻松地在Python中处理图像。 我们来看一段代码： 整个程序的核心都在下面两行，一个是字符的色阶表，一个是映射公式。 color = 'MNHQ$OC?7&#62;!:-;.' pic_str += color[int(pix[w, h]) * 14 / 255] 效果如下： 原图： 字符画： 在线的图片字符画生成请见：http://everet.org:1758/ 源码：https://github.com/cedricporter/et-python/tree/master/web%20server/webpy 本文链接：http://everet.org/2012/05/python-ascii-art.html &#124; © EverET.org 本文评论：2 comments") (content:encoded nil "<p>字符画很好玩，我们来看看怎样将一张图片变成字符画。</p><p>我们首先将图片变成黑白的，那么每个像素的取值范围为：0-255.</p><p>然后我们将0-255映射到0-14的范围上，然后用如下字符代替：</p><p>color = &#8216;MNHQ$OC?7&gt;!:-;.&#8217;</p><p>也就是像素为0的点用“M”表示，像素为14的点用“.”表示。</p><p>原理非常的简单，我们用Python来编写的话也非常的简单。只要借助PIL，就可以很轻松地在Python中处理图像。</p><p>我们来看一段代码：<span id=\"more-1012\"></span></p><pre class=\"brush: python; title: ; notranslate\">
+import Image
+
+color = 'MNHQ$OC?7&gt;!:-;.'
+
+def to_html(func):
+    html_head = '''
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;style type=&quot;text/css&quot;&gt;
+                  body {font-family:Monospace; font-size:5px;}
+                &lt;/style&gt;
+              &lt;/head&gt;
+            &lt;body&gt; '''
+    html_tail = '&lt;/body&gt;&lt;/html&gt;'
+
+    def wrapper(img):
+        pic_str = func(img)
+        pic_str = ''.join(l + ' &lt;br/&gt;' for l in pic_str.splitlines())
+        return html_head + pic_str + html_tail
+
+    return wrapper
+
+@to_html
+def make_char_img(img):
+    pix = img.load()
+    pic_str = ''
+    width, height = img.size
+    for h in xrange(height):
+        for w in xrange(width):
+            pic_str += color[int(pix[w, h]) * 14 / 255]
+        pic_str += '\\n'
+    return pic_str
+
+def preprocess(img_name):
+    img = Image.open(img_name)
+
+    w, h = img.size
+    m = max(img.size)
+    delta = m / 200.0
+    w, h = int(w / delta), int(h / delta)
+    img = img.resize((w, h))
+    img = img.convert('L')
+
+    return img
+
+def save_to_file(filename, pic_str):
+    outfile = open(filename, 'w')
+    outfile.write(pic_str)
+    outfile.close()
+
+def main():
+    img = preprocess('6.jpg')
+    pic_str = make_char_img(img)
+    save_to_file('char.html', pic_str)
+
+if __name__ == '__main__':
+    main()
+</pre><p>整个程序的核心都在下面两行，一个是字符的色阶表，一个是映射公式。</p><blockquote><pre>color = 'MNHQ$OC?7&gt;!:-;.'
+pic_str += color[int(pix[w, h]) * 14 / 255]</pre></blockquote><p>效果如下：</p><p>原图：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-06-203607.png\" rel=\"lightbox[1012]\"><img title=\"Screenshot from 2012-05-06 20:36:07\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-06-203607.png\" alt=\" \" width=\"474\" height=\"305\" /></a></p><p>字符画：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/f8e22973ddcb35e46163c796bce096fcScreenshot-at-2012-04-25-161736.png\" rel=\"lightbox[1012]\"><img class=\"alignnone size-full wp-image-1013\" title=\"f8e22973ddcb35e46163c796bce096fcScreenshot at 2012-04-25 16:17:36\" src=\"http://everet.org/wp-content/uploads/2012/05/f8e22973ddcb35e46163c796bce096fcScreenshot-at-2012-04-25-161736.png\" alt=\" \" width=\"410\" height=\"707\" /></a></p><p>在线的图片字符画生成请见：<a href=\"http://everet.org:1758/\">http://everet.org:1758/</a></p><p>源码：<a href=\"https://github.com/cedricporter/et-python/tree/master/web%20server/webpy\">https://github.com/cedricporter/et-python/tree/master/web%20server/webpy</a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/python-ascii-art.html\">http://everet.org/2012/05/python-ascii-art.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/python-ascii-art.html#comments\">2 comments</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/python-ascii-art.html/feed") (slash:comments nil "2"))) ("猜想祖国的伟大的围墙的原理" "<h2>防民之口，甚于防川。</h2><p>引用自百度百科的对于“防民之口，甚于防川”的启示：</p><blockquote><p>中国历史上有很多统治者荒淫无道，但他们又怕人民议论，就采取了压制社会言论的措施，以为可以高枕无忧、平安无事。实际上这是最愚蠢的作法，它不仅使下情无法上达，错误的政策得不到纠正，加剧社会矛盾。更可怕的在于虽然民众口上不说，但心里却充满了仇恨，只要社会矛盾到达临界点，大规模的暴乱必然爆发，给社会生产力造成极大破坏。正可谓“防民之口，甚于防川。”中国人是世界上最能忍受暴政的民族，但也是爆发起义最多的国家。</p></blockquote><p>无逻辑的舆论的控制，究竟会引发什么后果呢？或许多年后答案便自己浮现。</p><p>暂且不谈论我们伟大的围墙的对于人民生活的影响，我们来看看它的技术方面的实现。<span id=\"more-999\"></span></p><h2>景德镇的国域网</h2><p>景德镇的国域网对外的出口线路不多，只要在这些出口处架设好强大的过滤器，便可以保障国民思想安全性。这样过滤不会太麻烦，因为出口就这么几个，派兵守住就好。</p><p>在网络课上，刘孜文老师给我们讲了一个他的经历，<a href=\"http://everet.org/2012/05/gfw.html\">我</a>大致复述一下（语文很差，希望不会扭曲原意）：</p><p>老师的一个同学在收到领导指示，要弄一个省级的防火墙，这样可以方便警察叔叔将一些骗子网站、黄色网站过滤掉。于是他的同学开始鸭梨巨大了，因为一个省的对外的线路有很多很多条，很难在每一条出口安上防火墙，因为线路太多了。</p><p>这个例子说明，一个国家级的要比一个省级的围墙容易得多，原因是关口少，不像省与省之间的线路四通八达。</p><p>那么我们知道了在国域网对外的出口处有各种Cisco等强大的怪兽守住，我们来探讨一下这些怪兽的机制。</p><h2>工作机制</h2><p>在普遍的看法，我们伟大的围墙工作机制主要包括IP黑名单、内容过滤和DNS劫持。</p><h3>IP黑名单</h3><p>怪兽手里肯定把握着一份黑名单，上面写着Facebook、twitter、youtube等的ip地址，一旦发现镇民发往黑名单中地址的请求数据包，就直接无情地丢弃，当镇民等到花儿都谢了都没有收到服务器发回的包，他便生了一种叫超时的病而放弃了。</p><p>温总理曾说过：中国财富再多，除以13亿人，就少得可怜了；中国问题再小，乘以13亿人，也就很大了。</p><p>一个秒钟一个请求*13亿，就是一个很大的请求了。请问怪兽如何可以高速地在IP黑名单中查询这个ip在不在呢？</p><p>对于ipv4，每个ip地址32位，可以看作32位无符号整形。也就是2^32个ip地址。黑名单应该也不小，怎么也有几千几万几十万吧。那么怪兽怎么处理呢？</p><ul><li>怪兽如果很2B的话，它会拿着收到数据包的ip一个一个地和黑名单中的ip比较，如果在黑名单里面就将其丢弃，不在那就放过它。这样怪兽花的时间是O(n)，n为黑名单的大小。</li><li>怪兽智商稍微高一点的话，它会将黑名单中的排好序，然后使用伟大的二分查找法术，就可以花O(log(n))的时间判断那个ip在不在黑名单里面。</li><li>怪事如果智商不错的话，它会构建一个4G个单位的哈希表blacklist，然后直接将ip作为索引，初始化哈希表blacklist，blacklist[ip] = 1, if ip in ip_blacklist，这样，在一个请求过来的时候，怪兽只需要花费O(1)的时间就可以知道ip在不在黑名单里面。</li></ul><p>对于一个4G个单位的ip黑名单hash table，我们可以一个bit来表示一个ip是不是属于特殊对待ip。于是我们的ip hash table大小为：</p><blockquote><p>4G bit = 4 / 8 G Byte = 0.5 GB = 512 MB</p></blockquote><p>怪兽只需要有512MB的空闲内存就可以构建这么一个hash表，然后无论是多线程模式的还是多进程模式的设计都可以共享这块放hash表的内存，中途如果有新增或者取消话都可以直接更新hash表，当然可能会因为有缓存而导致不一致，但是在这个大环境下也不一那么较真，让正确率100%，所以连锁都可以不用加，这样怪兽的负担会轻很多。不过bitmap在ipv6下是不那么实际的，因为使用内存会非常巨大，2^128bit，会消耗39614081257132168796771975168GB的内存来放bitmap。可能这也是怪兽没有对ipv6下手的原因。</p><p>我们来看一段代码，描述了高效判断是否在黑名单的方法。</p><pre class=\"brush: cpp; title: ; notranslate\">
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;arpa/inet.h&gt;
+#define BITSPERWORD 32
+#define SHIFT 5			// 2 ^ 5 = 32
+#define MASK 0x1F		// 0x1F = (11111)b
+#define SET(a, i) ((a)[(i)&gt;&gt;SHIFT] |= (1&lt;&lt;((i) &amp; MASK)))
+#define CLR(a, i) ((a)[(i)&gt;&gt;SHIFT] &amp;= ~(1&lt;&lt;((i) &amp; MASK)))
+#define TEST(a, i) ((a)[(i)&gt;&gt;SHIFT] &amp; (1&lt;&lt;((i) &amp; MASK)))
+inline void test_block(int* blacklist, char* ip)
+{
+if (TEST(blacklist, inet_addr(ip)))
+printf(&quot;%s is blocked.\\n&quot;, ip);
+else
+printf(&quot;%s is pass.\\n&quot;, ip);
+}
+int main(int argc, char *argv[])
+{
+const unsigned long long N = 4294967295;
+const unsigned int SIZE = N / BITSPERWORD + 1;
+int* blacklist = (int*)malloc(SIZE * sizeof(int));
+memset(blacklist, SIZE, 0xff);
+SET(blacklist, inet_addr(&quot;243.185.187.39&quot;));
+SET(blacklist, inet_addr(&quot;8.8.4.4&quot;));
+SET(blacklist, inet_addr(&quot;202.84.125.66&quot;));
+SET(blacklist, inet_addr(&quot;222.221.31.55&quot;));
+SET(blacklist, inet_addr(&quot;183.182.44.111&quot;));
+SET(blacklist, inet_addr(&quot;255.255.255.156&quot;));
+test_block(blacklist, &quot;8.8.4.4&quot;);
+test_block(blacklist, &quot;222.222.222.222&quot;);
+test_block(blacklist, &quot;202.84.125.66&quot;);
+test_block(blacklist, &quot;88.54.32.156&quot;);
+test_block(blacklist, &quot;255.255.255.156&quot;);
+free(blacklist);
+return 0;
+}
+</pre><p>当然可能还有更好的方法，请赐教～</p><h2>内容过滤</h2><p>曾经在一个人博客看到程序员的工作环境怎样为好，里面有一句让我影响无比深刻“<a href=\"http://timyang.net/misc/work-environment-productivity/\" target=\"_blank\">访问Google的服务没有障碍</a>”。这个真滴非常重要呀，虽然现在Google的https可以用了，不过好慢好慢，受不了啊。</p><p>像我们如果在Google搜索某些关键词后，我们从Google打开了某些网址后，不仅那些网站访问不了，而且Google就会被怪兽吃了。</p><p>Google不作恶啊，为什么要对Google那么狠……</p><p>例如我们在Google中搜索</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/fq.png\" rel=\"lightbox[999]\"><img class=\"alignnone size-full wp-image-1000\" title=\"fq\" src=\"http://everet.org/wp-content/uploads/2012/05/fq.png\" alt=\" \" width=\"51\" height=\"27\" /></a></p><p>然后就会发现Google被吃了。</p><p>怪兽做了什么？</p><p>怪兽首先伪造Google的ip发了许多RST包给镇民的浏览器，然后怪兽也可能伪造镇民的ip发了很多RST给Google，挑拨离间，最后镇民和Google在经过一段努力后发现还是无法沟通就不再继续通信了。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/gfw.png\" rel=\"lightbox[999]\"><img class=\"alignnone size-full wp-image-1001\" title=\"gfw\" src=\"http://everet.org/wp-content/uploads/2012/05/gfw.png\" alt=\" \" width=\"693\" height=\"634\" /></a></p><p>怪兽应该对http包进行了扫描，看看有没有什么敏感词，有的话就伪装成对方开始卑鄙地发送RST，来挑拨离间最终实现断开连接。</p><h2>DNS劫持</h2><p>有一部分怪兽应该会专门负责污染国内DNS服务器的缓存，导致我们解析到了错误的ip。有一部分怪兽会篡改国外DNS发回的响应，导致镇民获得了错误的ip。</p><h2>结言</h2><p>防民之口，甚于防川。过度地压制景德镇的镇民似乎并不太好，希望未来的祖国会更加开放、更加发达。</p><p>天朝威武～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/gfw.html\">http://everet.org/2012/05/gfw.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/gfw.html#comments\">2 comments</a></small></p>" "http://everet.org/2012/05/gfw.html" (20389 3210) new 2 nil nil ((title nil "猜想祖国的伟大的围墙的原理") (link nil "http://everet.org/2012/05/gfw.html") (comments nil "http://everet.org/2012/05/gfw.html#comments") (pubDate nil "Sat, 05 May 2012 11:18:34 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Web") (guid ((isPermaLink . "false")) "http://everet.org/?p=999") (description nil "防民之口，甚于防川。 引用自百度百科的对于“防民之口，甚于防川”的启示： 中国历史上有很多统治者荒淫无道，但他们又怕人民议论，就采取了压制社会言论的措施，以为可以高枕无忧、平安无事。实际上这是最愚蠢的作法，它不仅使下情无法上达，错误的政策得不到纠正，加剧社会矛盾。更可怕的在于虽然民众口上不说，但心里却充满了仇恨，只要社会矛盾到达临界点，大规模的暴乱必然爆发，给社会生产力造成极大破坏。正可谓“防民之口，甚于防川。”中国人是世界上最能忍受暴政的民族，但也是爆发起义最多的国家。 无逻辑的舆论的控制，究竟会引发什么后果呢？或许多年后答案便自己浮现。 暂且不谈论我们伟大的围墙的对于人民生活的影响，我们来看看它的技术方面的实现。 景德镇的国域网 景德镇的国域网对外的出口线路不多，只要在这些出口处架设好强大的过滤器，便可以保障国民思想安全性。这样过滤不会太麻烦，因为出口就这么几个，派兵守住就好。 在网络课上，刘孜文老师给我们讲了一个他的经历，我大致复述一下（语文很差，希望不会扭曲原意）： 老师的一个同学在收到领导指示，要弄一个省级的防火墙，这样可以方便警察叔叔将一些骗子网站、黄色网站过滤掉。于是他的同学开始鸭梨巨大了，因为一个省的对外的线路有很多很多条，很难在每一条出口安上防火墙，因为线路太多了。 这个例子说明，一个国家级的要比一个省级的围墙容易得多，原因是关口少，不像省与省之间的线路四通八达。 那么我们知道了在国域网对外的出口处有各种Cisco等强大的怪兽守住，我们来探讨一下这些怪兽的机制。 工作机制 在普遍的看法，我们伟大的围墙工作机制主要包括IP黑名单、内容过滤和DNS劫持。 IP黑名单 怪兽手里肯定把握着一份黑名单，上面写着Facebook、twitter、youtube等的ip地址，一旦发现镇民发往黑名单中地址的请求数据包，就直接无情地丢弃，当镇民等到花儿都谢了都没有收到服务器发回的包，他便生了一种叫超时的病而放弃了。 温总理曾说过：中国财富再多，除以13亿人，就少得可怜了；中国问题再小，乘以13亿人，也就很大了。 一个秒钟一个请求*13亿，就是一个很大的请求了。请问怪兽如何可以高速地在IP黑名单中查询这个ip在不在呢？ 对于ipv4，每个ip地址32位，可以看作32位无符号整形。也就是2^32个ip地址。黑名单应该也不小，怎么也有几千几万几十万吧。那么怪兽怎么处理呢？ 怪兽如果很2B的话，它会拿着收到数据包的ip一个一个地和黑名单中的ip比较，如果在黑名单里面就将其丢弃，不在那就放过它。这样怪兽花的时间是O(n)，n为黑名单的大小。 怪兽智商稍微高一点的话，它会将黑名单中的排好序，然后使用伟大的二分查找法术，就可以花O(log(n))的时间判断那个ip在不在黑名单里面。 怪事如果智商不错的话，它会构建一个4G个单位的哈希表blacklist，然后直接将ip作为索引，初始化哈希表blacklist，blacklist[ip] = 1, if ip in ip_blacklist，这样，在一个请求过来的时候，怪兽只需要花费O(1)的时间就可以知道ip在不在黑名单里面。 对于一个4G个单位的ip黑名单hash table，我们可以一个bit来表示一个ip是不是属于特殊对待ip。于是我们的ip hash table大小为： 4G bit = 4 / 8 G Byte = 0.5 GB = 512 MB 怪兽只需要有512MB的空闲内存就可以构建这么一个hash表，然后无论是多线程模式的还是多进程模式的设计都可以共享这块放hash表的内存，中途如果有新增或者取消话都可以直接更新hash表，当然可能会因为有缓存而导致不一致，但是在这个大环境下也不一那么较真，让正确率100%，所以连锁都可以不用加，这样怪兽的负担会轻很多。不过bitmap在ipv6下是不那么实际的，因为使用内存会非常巨大，2^128bit，会消耗39614081257132168796771975168GB的内存来放bitmap。可能这也是怪兽没有对ipv6下手的原因。 我们来看一段代码，描述了高效判断是否在黑名单的方法。 当然可能还有更好的方法，请赐教～ 内容过滤 曾经在一个人博客看到程序员的工作环境怎样为好，里面有一句让我影响无比深刻“访问Google的服务没有障碍”。这个真滴非常重要呀，虽然现在Google的https可以用了，不过好慢好慢，受不了啊。 像我们如果在Google搜索某些关键词后，我们从Google打开了某些网址后，不仅那些网站访问不了，而且Google就会被怪兽吃了。 Google不作恶啊，为什么要对Google那么狠&#8230;&#8230; 例如我们在Google中搜索 然后就会发现Google被吃了。 怪兽做了什么？<a href=\"http://everet.org/2012/05/gfw.html\"><br /><br /> (More)…</a>") (content:encoded nil "<h2>防民之口，甚于防川。</h2><p>引用自百度百科的对于“防民之口，甚于防川”的启示：</p><blockquote><p>中国历史上有很多统治者荒淫无道，但他们又怕人民议论，就采取了压制社会言论的措施，以为可以高枕无忧、平安无事。实际上这是最愚蠢的作法，它不仅使下情无法上达，错误的政策得不到纠正，加剧社会矛盾。更可怕的在于虽然民众口上不说，但心里却充满了仇恨，只要社会矛盾到达临界点，大规模的暴乱必然爆发，给社会生产力造成极大破坏。正可谓“防民之口，甚于防川。”中国人是世界上最能忍受暴政的民族，但也是爆发起义最多的国家。</p></blockquote><p>无逻辑的舆论的控制，究竟会引发什么后果呢？或许多年后答案便自己浮现。</p><p>暂且不谈论我们伟大的围墙的对于人民生活的影响，我们来看看它的技术方面的实现。<span id=\"more-999\"></span></p><h2>景德镇的国域网</h2><p>景德镇的国域网对外的出口线路不多，只要在这些出口处架设好强大的过滤器，便可以保障国民思想安全性。这样过滤不会太麻烦，因为出口就这么几个，派兵守住就好。</p><p>在网络课上，刘孜文老师给我们讲了一个他的经历，<a href=\"http://everet.org/2012/05/gfw.html\">我</a>大致复述一下（语文很差，希望不会扭曲原意）：</p><p>老师的一个同学在收到领导指示，要弄一个省级的防火墙，这样可以方便警察叔叔将一些骗子网站、黄色网站过滤掉。于是他的同学开始鸭梨巨大了，因为一个省的对外的线路有很多很多条，很难在每一条出口安上防火墙，因为线路太多了。</p><p>这个例子说明，一个国家级的要比一个省级的围墙容易得多，原因是关口少，不像省与省之间的线路四通八达。</p><p>那么我们知道了在国域网对外的出口处有各种Cisco等强大的怪兽守住，我们来探讨一下这些怪兽的机制。</p><h2>工作机制</h2><p>在普遍的看法，我们伟大的围墙工作机制主要包括IP黑名单、内容过滤和DNS劫持。</p><h3>IP黑名单</h3><p>怪兽手里肯定把握着一份黑名单，上面写着Facebook、twitter、youtube等的ip地址，一旦发现镇民发往黑名单中地址的请求数据包，就直接无情地丢弃，当镇民等到花儿都谢了都没有收到服务器发回的包，他便生了一种叫超时的病而放弃了。</p><p>温总理曾说过：中国财富再多，除以13亿人，就少得可怜了；中国问题再小，乘以13亿人，也就很大了。</p><p>一个秒钟一个请求*13亿，就是一个很大的请求了。请问怪兽如何可以高速地在IP黑名单中查询这个ip在不在呢？</p><p>对于ipv4，每个ip地址32位，可以看作32位无符号整形。也就是2^32个ip地址。黑名单应该也不小，怎么也有几千几万几十万吧。那么怪兽怎么处理呢？</p><ul><li>怪兽如果很2B的话，它会拿着收到数据包的ip一个一个地和黑名单中的ip比较，如果在黑名单里面就将其丢弃，不在那就放过它。这样怪兽花的时间是O(n)，n为黑名单的大小。</li><li>怪兽智商稍微高一点的话，它会将黑名单中的排好序，然后使用伟大的二分查找法术，就可以花O(log(n))的时间判断那个ip在不在黑名单里面。</li><li>怪事如果智商不错的话，它会构建一个4G个单位的哈希表blacklist，然后直接将ip作为索引，初始化哈希表blacklist，blacklist[ip] = 1, if ip in ip_blacklist，这样，在一个请求过来的时候，怪兽只需要花费O(1)的时间就可以知道ip在不在黑名单里面。</li></ul><p>对于一个4G个单位的ip黑名单hash table，我们可以一个bit来表示一个ip是不是属于特殊对待ip。于是我们的ip hash table大小为：</p><blockquote><p>4G bit = 4 / 8 G Byte = 0.5 GB = 512 MB</p></blockquote><p>怪兽只需要有512MB的空闲内存就可以构建这么一个hash表，然后无论是多线程模式的还是多进程模式的设计都可以共享这块放hash表的内存，中途如果有新增或者取消话都可以直接更新hash表，当然可能会因为有缓存而导致不一致，但是在这个大环境下也不一那么较真，让正确率100%，所以连锁都可以不用加，这样怪兽的负担会轻很多。不过bitmap在ipv6下是不那么实际的，因为使用内存会非常巨大，2^128bit，会消耗39614081257132168796771975168GB的内存来放bitmap。可能这也是怪兽没有对ipv6下手的原因。</p><p>我们来看一段代码，描述了高效判断是否在黑名单的方法。</p><pre class=\"brush: cpp; title: ; notranslate\">
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;arpa/inet.h&gt;
+
+#define BITSPERWORD 32
+#define SHIFT 5			// 2 ^ 5 = 32
+#define MASK 0x1F		// 0x1F = (11111)b
+#define SET(a, i) ((a)[(i)&gt;&gt;SHIFT] |= (1&lt;&lt;((i) &amp; MASK)))
+#define CLR(a, i) ((a)[(i)&gt;&gt;SHIFT] &amp;= ~(1&lt;&lt;((i) &amp; MASK)))
+#define TEST(a, i) ((a)[(i)&gt;&gt;SHIFT] &amp; (1&lt;&lt;((i) &amp; MASK)))
+
+inline void test_block(int* blacklist, char* ip)
+{
+     if (TEST(blacklist, inet_addr(ip)))
+	  printf(&quot;%s is blocked.\\n&quot;, ip);
+     else
+	  printf(&quot;%s is pass.\\n&quot;, ip);
+}
+
+int main(int argc, char *argv[])
+{
+     const unsigned long long N = 4294967295;
+     const unsigned int SIZE = N / BITSPERWORD + 1;
+     int* blacklist = (int*)malloc(SIZE * sizeof(int));
+
+     memset(blacklist, SIZE, 0xff);
+     SET(blacklist, inet_addr(&quot;243.185.187.39&quot;));
+     SET(blacklist, inet_addr(&quot;8.8.4.4&quot;));
+     SET(blacklist, inet_addr(&quot;202.84.125.66&quot;));
+     SET(blacklist, inet_addr(&quot;222.221.31.55&quot;));
+     SET(blacklist, inet_addr(&quot;183.182.44.111&quot;));
+     SET(blacklist, inet_addr(&quot;255.255.255.156&quot;));
+
+     test_block(blacklist, &quot;8.8.4.4&quot;);
+     test_block(blacklist, &quot;222.222.222.222&quot;);
+     test_block(blacklist, &quot;202.84.125.66&quot;);
+     test_block(blacklist, &quot;88.54.32.156&quot;);
+     test_block(blacklist, &quot;255.255.255.156&quot;);
+
+     free(blacklist);
+     return 0;
+}
+</pre><p>当然可能还有更好的方法，请赐教～</p><h2>内容过滤</h2><p>曾经在一个人博客看到程序员的工作环境怎样为好，里面有一句让我影响无比深刻“<a href=\"http://timyang.net/misc/work-environment-productivity/\" target=\"_blank\">访问Google的服务没有障碍</a>”。这个真滴非常重要呀，虽然现在Google的https可以用了，不过好慢好慢，受不了啊。</p><p>像我们如果在Google搜索某些关键词后，我们从Google打开了某些网址后，不仅那些网站访问不了，而且Google就会被怪兽吃了。</p><p>Google不作恶啊，为什么要对Google那么狠&#8230;&#8230;</p><p>例如我们在Google中搜索</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/fq.png\" rel=\"lightbox[999]\"><img class=\"alignnone size-full wp-image-1000\" title=\"fq\" src=\"http://everet.org/wp-content/uploads/2012/05/fq.png\" alt=\" \" width=\"51\" height=\"27\" /></a></p><p>然后就会发现Google被吃了。</p><p>怪兽做了什么？</p><p>怪兽首先伪造Google的ip发了许多RST包给镇民的浏览器，然后怪兽也可能伪造镇民的ip发了很多RST给Google，挑拨离间，最后镇民和Google在经过一段努力后发现还是无法沟通就不再继续通信了。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/gfw.png\" rel=\"lightbox[999]\"><img class=\"alignnone size-full wp-image-1001\" title=\"gfw\" src=\"http://everet.org/wp-content/uploads/2012/05/gfw.png\" alt=\" \" width=\"693\" height=\"634\" /></a></p><p>怪兽应该对http包进行了扫描，看看有没有什么敏感词，有的话就伪装成对方开始卑鄙地发送RST，来挑拨离间最终实现断开连接。</p><h2>DNS劫持</h2><p>有一部分怪兽应该会专门负责污染国内DNS服务器的缓存，导致我们解析到了错误的ip。有一部分怪兽会篡改国外DNS发回的响应，导致镇民获得了错误的ip。</p><h2>结言</h2><p>防民之口，甚于防川。过度地压制景德镇的镇民似乎并不太好，希望未来的祖国会更加开放、更加发达。</p><p>天朝威武～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/gfw.html\">http://everet.org/2012/05/gfw.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/gfw.html#comments\">2 comments</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/gfw.html/feed") (slash:comments nil "2"))) ("在Ubuntu下编译调试版的Python" "<p>在Windows调试Python解释器还是非常方便的，因为有强大的VS。</p><p>不过在Linux下可能有点不那么顺畅。但是稍微设置一下还是可以很方便地调试的。我们来看看在Ubuntu下怎么做。</p><h2>获取源码</h2><p>在Ubuntu下获取Python2.7的源码非常方便，只需要使用apt-get就可以轻松取得。在Shell下输入</p><blockquote><p>apt-get source python2.7</p></blockquote><p>即可以将Python的源码下载到当前目录。</p><p>然后我们就可以得到一个tar.gz的压缩包。</p><h2>编译</h2><p>我们进入源码文件夹后输入</p><blockquote><p>./configure</p><p>make</p></blockquote><p>然后就可以编译得到python。</p><p>当然，此时的Python不是调试版的，如果要编译调试版的Python，就需要再做一些东西。首先我们可以Google一下怎么做，貌似很多都是引用了源码README的一段话：<span id=\"more-992\"></span></p><blockquote><p>command; e.g. “make OPT=-g” will build a debugging version of Python<br />
+on most platforms. The default is OPT=-O; a value for OPT in the<br />
+environment when the configure script is run overrides this default<br />
+(likewise for CC; and the initial value for LIBS is used as the base<br />
+set of libraries to link with).</p></blockquote><p>好，我们现在使用</p><p>make OPT=-g</p><p>试试，嗯，确实用gdb可以调试了，不过单步的时候会在源码那里会一下在上一下在下地跳来跳去。而且查看变量值的时候很多变量显示的是&lt;optimized out&gt;。原因是编译的时候优化了。那优化选项什么时候被加进去了？</p><p>我们来看看configure生成的Makefile中的一段。</p><blockquote><p># Compiler options<br /><span style=\"color: #ff0000;\">OPT</span>= -DNDEBUG -g -fwrapv <span style=\"color: #ff0000;\">-O3</span> -Wall -Wstrict-prototypes<br />
+BASECFLAGS= -fno-strict-aliasing<br /><span style=\"color: #ff0000;\">CFLAGS</span>= $(BASECFLAGS) -g <span style=\"color: #ff0000;\">-O2</span> $(OPT) $(EXTRA_CFLAGS)<br />
+# Both CPPFLAGS and LDFLAGS need to contain the shell’s value for setup.py to<br />
+# be able to build extension modules using the directories specified in the<br />
+# environment variables<br />
+CPPFLAGS= -I. -IInclude -I$(srcdir)/Include</p></blockquote><p>可以看到OPT的-O3已经被我们的OPT=-g参数覆盖掉了，不过还有一个-O2在CFLAGS那里。呃，原来源码的README还是不可靠的啊。</p><p>我们现在来重新编译：</p><blockquote><p>make clean</p><p>make -j4 OPT=-g CFLAGS=-g</p></blockquote><p>这样编译的时候gcc就不会优化代码了。我们单步的时候就不会跳来跳去，变量的值也不会出现&lt;optimized out&gt;。</p><p>另外“-j4”选项是指开4个gcc编译，我是2核处理器，所以开4个gcc编译会快些。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-04-202058.png\" rel=\"lightbox[992]\"><img class=\"alignnone size-full wp-image-993\" title=\"Screenshot from 2012-05-04 20:20:58\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-04-202058.png\" alt=\" \" width=\"670\" height=\"648\" /></a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/compile-debug-python-in-ubuntu.html\">http://everet.org/2012/05/compile-debug-python-in-ubuntu.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/compile-debug-python-in-ubuntu.html#comments\">No comment</a></small></p>" "http://everet.org/2012/05/compile-debug-python-in-ubuntu.html" (20387 52653) old 3 nil nil ((title nil "在Ubuntu下编译调试版的Python") (link nil "http://everet.org/2012/05/compile-debug-python-in-ubuntu.html") (comments nil "http://everet.org/2012/05/compile-debug-python-in-ubuntu.html#comments") (pubDate nil "Fri, 04 May 2012 12:38:05 +0000") (dc:creator nil "Stupid ET") (category nil "Linux") (category nil "我的分享") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=992") (description nil "在Windows调试Python解释器还是非常方便的，因为有强大的VS。 不过在Linux下可能有点不那么顺畅。但是稍微设置一下还是可以很方便地调试的。我们来看看在Ubuntu下怎么做。 获取源码 在Ubuntu下获取Python2.7的源码非常方便，只需要使用apt-get就可以轻松取得。在Shell下输入 apt-get source python2.7 即可以将Python的源码下载到当前目录。 然后我们就可以得到一个tar.gz的压缩包。 编译 我们进入源码文件夹后输入 ./configure make 然后就可以编译得到python。 当然，此时的Python不是调试版的，如果要编译调试版的Python，就需要再做一些东西。首先我们可以Google一下怎么做，貌似很多都是引用了源码README的一段话： command; e.g. “make OPT=-g” will build a debugging version of Python on most platforms. The default is OPT=-O; a value for OPT in the environment when the configure script is run overrides this default (likewise for CC; and the initial<a href=\"http://everet.org/2012/05/compile-debug-python-in-ubuntu.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p>在Windows调试Python解释器还是非常方便的，因为有强大的VS。</p><p>不过在Linux下可能有点不那么顺畅。但是稍微设置一下还是可以很方便地调试的。我们来看看在Ubuntu下怎么做。</p><h2>获取源码</h2><p>在Ubuntu下获取Python2.7的源码非常方便，只需要使用apt-get就可以轻松取得。在Shell下输入</p><blockquote><p>apt-get source python2.7</p></blockquote><p>即可以将Python的源码下载到当前目录。</p><p>然后我们就可以得到一个tar.gz的压缩包。</p><h2>编译</h2><p>我们进入源码文件夹后输入</p><blockquote><p>./configure</p><p>make</p></blockquote><p>然后就可以编译得到python。</p><p>当然，此时的Python不是调试版的，如果要编译调试版的Python，就需要再做一些东西。首先我们可以Google一下怎么做，貌似很多都是引用了源码README的一段话：<span id=\"more-992\"></span></p><blockquote><p>command; e.g. “make OPT=-g” will build a debugging version of Python<br />
+on most platforms. The default is OPT=-O; a value for OPT in the<br />
+environment when the configure script is run overrides this default<br />
+(likewise for CC; and the initial value for LIBS is used as the base<br />
+set of libraries to link with).</p></blockquote><p>好，我们现在使用</p><p>make OPT=-g</p><p>试试，嗯，确实用gdb可以调试了，不过单步的时候会在源码那里会一下在上一下在下地跳来跳去。而且查看变量值的时候很多变量显示的是&lt;optimized out&gt;。原因是编译的时候优化了。那优化选项什么时候被加进去了？</p><p>我们来看看configure生成的Makefile中的一段。</p><blockquote><p># Compiler options<br /><span style=\"color: #ff0000;\">OPT</span>= -DNDEBUG -g -fwrapv <span style=\"color: #ff0000;\">-O3</span> -Wall -Wstrict-prototypes<br />
+BASECFLAGS= -fno-strict-aliasing<br /><span style=\"color: #ff0000;\">CFLAGS</span>= $(BASECFLAGS) -g <span style=\"color: #ff0000;\">-O2</span> $(OPT) $(EXTRA_CFLAGS)<br />
+# Both CPPFLAGS and LDFLAGS need to contain the shell&#8217;s value for setup.py to<br />
+# be able to build extension modules using the directories specified in the<br />
+# environment variables<br />
+CPPFLAGS= -I. -IInclude -I$(srcdir)/Include</p></blockquote><p>可以看到OPT的-O3已经被我们的OPT=-g参数覆盖掉了，不过还有一个-O2在CFLAGS那里。呃，原来源码的README还是不可靠的啊。</p><p>我们现在来重新编译：</p><blockquote><p>make clean</p><p>make -j4 OPT=-g CFLAGS=-g</p></blockquote><p>这样编译的时候gcc就不会优化代码了。我们单步的时候就不会跳来跳去，变量的值也不会出现&lt;optimized out&gt;。</p><p>另外“-j4”选项是指开4个gcc编译，我是2核处理器，所以开4个gcc编译会快些。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-04-202058.png\" rel=\"lightbox[992]\"><img class=\"alignnone size-full wp-image-993\" title=\"Screenshot from 2012-05-04 20:20:58\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-04-202058.png\" alt=\" \" width=\"670\" height=\"648\" /></a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/compile-debug-python-in-ubuntu.html\">http://everet.org/2012/05/compile-debug-python-in-ubuntu.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/compile-debug-python-in-ubuntu.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/compile-debug-python-in-ubuntu.html/feed") (slash:comments nil "0"))) ("C++与Python混合编程" "<p>混合语言策略可以汲取各语言之所长，让开发更加敏捷。混合语言策略在在应用得当时可以让程序更加优雅。</p><p>在《Unix编程艺术》中，Raymond说道：</p><blockquote><p>混合语言是一种知识密集型（而不是编码密集型）的编程。要让它能够工作，我们不仅应该具备相当数量的多种语言应用知识，并且还需要具备能够判断这些语言在什么地方最适合、以及怎样把他们组合在一起的潜经验。</p></blockquote><p>在混合语言编程中，我们遇到的第一个问题是如何需要让他们可以互相调用。也就是像C++可以调用Python的函数、Python又可以调用C++的函数。</p><p>对于C++和Python的混合编程主要有两种方式。</p><ol><li>将C++写的模块编译成动态链接库，然后由Python主程序使用。这种一般是单方向的使用。</li><li>用C++主程序调用Python。然后Python中可以使用C++主程序的函数。</li></ol><p>对于第一种方式非常简单，我们在此就不讨论了。我们将着重讨论第二种方式。<span id=\"more-972\"></span></p><h2>Simple Exampe of Mixing C++ and Python Code</h2><p>我们举个例子。以下是C++主程序，做的事情是创建了一个空白的地图，然后加载Python模块构建地图。</p><pre class=\"brush: cpp; highlight: [56,60,74,87,92,95]; title: ; notranslate\">
+// website: http://EverET.org
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;boost/python.hpp&gt;
+class Map
+{
+public:
+Map() : m_map(10, std::vector&lt;char&gt;(20, '.'))
+{}
+void SetPixel(int x, int y, int val)
+{
+m_map[y][x] = val;
+}
+void Print()
+{
+for (int i = 0; i &lt; m_map.size(); ++i)
+{
+for (int j = 0; j &lt; m_map[i].size(); ++j)
+{
+std::cout &lt;&lt; m_map[i][j];
+}
+std::cout &lt;&lt; std::endl;
+}
+}
+private:
+std::vector&lt;std::vector&lt;char&gt; &gt; m_map;
+};
+void InitPython()
+{
+Py_Initialize();
+if(!Py_IsInitialized())
+{
+exit(-1);
+}
+}
+// Get the instance of the map, Singleton Pattern
+// only one map instance exists
+Map* GetMapInstance()
+{
+static Map* the_map = NULL;
+if (!the_map)
+{
+the_map = new Map();
+}
+return the_map;
+}
+// export c++ function and class to python
+BOOST_PYTHON_MODULE(MyEngine)
+{
+using namespace boost::python;
+def(&quot;GetMapInstance&quot;, GetMapInstance,
+return_value_policy&lt; reference_existing_object &gt;());
+class_&lt;Map&gt;(&quot;Map&quot;, &quot;Game Map&quot;)
+.def(&quot;Print&quot;, &amp;Map::Print)
+.def(&quot;SetPixel&quot;, &amp;Map::SetPixel,
+(arg(&quot;x&quot;), &quot;y&quot;, &quot;val&quot;));
+}
+int main()
+{
+try
+{
+using namespace boost::python;
+InitPython();
+initMyEngine(); // init MyEngine Module
+// Add current path to sys.path. You have to
+// do this in linux. While in Windows,
+// current path is already in sys.path.
+object main_module = import( &quot;__main__&quot; );
+object main_namespace = main_module.attr( &quot;__dict__&quot; );
+object ignored = exec(
+&quot;import sys\\n&quot;
+&quot;sys.path.append('.')\\n&quot;, main_namespace );
+Map* map = GetMapInstance();
+std::cout &lt;&lt; &quot;Before python\\n&quot;;
+map-&gt;Print();
+// load python to design the map
+object mapMaker = import(&quot;mapmaker&quot;);
+object makeMap = mapMaker.attr(&quot;make_map&quot;);
+makeMap();
+std::cout &lt;&lt; &quot;\\nAfter python\\n&quot;;
+map-&gt;Print();
+}
+catch (...)
+{
+PyErr_Print();
+}
+return 0;
+}
+</pre><p>Python写的地图生成程序：mapmaker.py。</p><pre class=\"brush: python; highlight: [1,4]; title: mapmaker.py; notranslate\">
+import MyEngine
+import random
+def make_map():
+the_map = MyEngine.GetMapInstance()
+n = 10
+for i in range(n):
+for j in range(10 - i, 10 + i - 1):
+the_map.SetPixel(j, i, ord('*'))
+</pre><p>我们可以仔细看看C++和Python代码中被高亮的行（代码是js高亮的，如果还没高亮请稍等页面加载完成）。</p><p>C++通过Boost库可以方便地和Python交互。当然我们还可以直接是用解释器提供的C API的和Python交互，不过这样会有非常多的累赘的代码。</p><p>C++和Python交互的关键之处是通过BOOST_PYTHON_MODULE来导出C++的函数和类，此外还需要执行initMyEngine这个函数来将这个模块注册进Python解释器。具体细节可以见代码。</p><p>对于</p><blockquote><pre> def(\"GetMapInstance\", GetMapInstance,
+return_value_policy&lt; reference_existing_object &gt;());</pre></blockquote><p>中的return_value_policy&lt; reference_existing_object &gt;()可以参考我以前写的：<a href=\"http://blog.csdn.net/cedricporter/article/details/6828322\">http://blog.csdn.net/cedricporter/article/details/6828322</a></p><h2>编译：</h2><blockquote><p>g++ main.cpp -o map -I/usr/include/python2.7 -lboost_python -lpython2.7</p></blockquote><p>在Windows上编译更容易，就不再罗嗦。</p><p>最后程序的输出，可以见到Python将地图由空白变成了一个三角形：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-03-210111.png\" rel=\"lightbox[972]\"><img class=\"alignnone size-full wp-image-978\" title=\"Screenshot from 2012-05-03 21:01:11\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-03-210111.png\" alt=\" \" width=\"280\" height=\"434\" /></a></p><h2>Example</h2><p>对于用合适的语言来做合适的事情，会让开发效率和产品质量有所提高。例如，在Emacs里面，就可以是用lisp来控制emacs，AutoCAD中也可以是用脚本来绘图。这样的用户接口更加灵活。</p><h2>Other</h2><h3>Scar</h3><p>对于Scar这款3D太空：<a href=\"http://www.everet.org/2012/01/scar.html\">http://www.everet.org/2012/01/scar.html</a>，是用C++和Python混合编程。在Scar中的2D界面库，有C++写成的基本元件，例如容器和按钮。我们可以在Python中组装C++元件来装配游戏的2D界面，然后返回一棵树的根节点给C++。于是像Scar中的水平仪，提示面板，地图，血条等等都是在Python中组装好的。此外，我们还可以在Python中编写元件的事件处理函数。这样做的好处是，我们在修改界面的时候，不再需要重新编译程序，只要修改脚本就好。</p><p>这样的开发会更加便捷而且应对变更的能力会更强。</p><h3>ImaginationFactory</h3><p>Imagination Factory是在大一的时候写的一个图像处理程序，<a href=\"http://everet.org/2012/01/imagination-factory.html\">http://everet.org/2012/01/imagination-factory.html</a>。</p><p>图像处理核心使用C++编写，界面使用C#/WPF编写。用WPF写界面即方便又便捷，可以轻松地实现很酷的效果。</p><h3>Clover —— Computer Simulation Origami</h3><p>Clover是一款计算机模拟折纸的程序，主要程序使用C#编写，内嵌Python解释器，可以用Python折纸。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/cpp-python.html\">http://everet.org/2012/05/cpp-python.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/cpp-python.html#comments\">No comment</a></small></p>" "http://everet.org/2012/05/cpp-python.html" (20386 34410) old 4 nil nil ((title nil "C++与Python混合编程") (link nil "http://everet.org/2012/05/cpp-python.html") (comments nil "http://everet.org/2012/05/cpp-python.html#comments") (pubDate nil "Thu, 03 May 2012 13:21:46 +0000") (dc:creator nil "Stupid ET") (category nil "我的代码") (category nil "我的分享") (category nil "C++") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=972") (description nil "混合语言策略可以汲取各语言之所长，让开发更加敏捷。混合语言策略在在应用得当时可以让程序更加优雅。 在《Unix编程艺术》中，Raymond说道： 混合语言是一种知识密集型（而不是编码密集型）的编程。要让它能够工作，我们不仅应该具备相当数量的多种语言应用知识，并且还需要具备能够判断这些语言在什么地方最适合、以及怎样把他们组合在一起的潜经验。 在混合语言编程中，我们遇到的第一个问题是如何需要让他们可以互相调用。也就是像C++可以调用Python的函数、Python又可以调用C++的函数。 对于C++和Python的混合编程主要有两种方式。 将C++写的模块编译成动态链接库，然后由Python主程序使用。这种一般是单方向的使用。 用C++主程序调用Python。然后Python中可以使用C++主程序的函数。 对于第一种方式非常简单，我们在此就不讨论了。我们将着重讨论第二种方式。 Simple Exampe of Mixing C++ and Python Code 我们举个例子。以下是C++主程序，做的事情是创建了一个空白的地图，然后加载Python模块构建地图。 Python写的地图生成程序：mapmaker.py。 我们可以仔细看看C++和Python代码中被高亮的行（代码是js高亮的，如果还没高亮请稍等页面加载完成）。 C++通过Boost库可以方便地和Python交互。当然我们还可以直接是用解释器提供的C API的和Python交互，不过这样会有非常多的累赘的代码。 C++和Python交互的关键之处是通过BOOST_PYTHON_MODULE来导出C++的函数和类，此外还需要执行initMyEngine这个函数来将这个模块注册进Python解释器。具体细节可以见代码。 对于 def(\"GetMapInstance\", GetMapInstance, return_value_policy&#60; reference_existing_object &#62;()); 中的return_value_policy&#60; reference_existing_object &#62;()可以参考我以前写的：http://blog.csdn.net/cedricporter/article/details/6828322 编译： g++ main.cpp -o map -I/usr/include/python2.7 -lboost_python -lpython2.7 在Windows上编译更容易，就不再罗嗦。 最后程序的输出，可以见到Python将地图由空白变成了一个三角形： Example 对于用合适的语言来做合适的事情，会让开发效率和产品质量有所提高。例如，在Emacs里面，就可以是用lisp来控制emacs，AutoCAD中也可以是用脚本来绘图。这样的用户接口更加灵活。 Other Scar 对于Scar这款3D太空：http://www.everet.org/2012/01/scar.html，是用C++和Python混合编程。在Scar中的2D界面库，有C++写成的基本元件，例如容器和按钮。我们可以在Python中组装C++元件来装配游戏的2D界面，然后返回一棵树的根节点给C++。于是像Scar中的水平仪，提示面板，地图，血条等等都是在Python中组装好的。此外，我们还可以在Python中编写元件的事件处理函数。这样做的好处是，我们在修改界面的时候，不再需要重新编译程序，只要修改脚本就好。 这样的开发会更加便捷而且应对变更的能力会更强。 ImaginationFactory Imagination Factory是在大一的时候写的一个图像处理程序，http://everet.org/2012/01/imagination-factory.html。 图像处理核心使用C++编写，界面使用C#/WPF编写。用WPF写界面即方便又便捷，可以轻松地实现很酷的效果。 Clover —— Computer Simulation<a href=\"http://everet.org/2012/05/cpp-python.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p>混合语言策略可以汲取各语言之所长，让开发更加敏捷。混合语言策略在在应用得当时可以让程序更加优雅。</p><p>在《Unix编程艺术》中，Raymond说道：</p><blockquote><p>混合语言是一种知识密集型（而不是编码密集型）的编程。要让它能够工作，我们不仅应该具备相当数量的多种语言应用知识，并且还需要具备能够判断这些语言在什么地方最适合、以及怎样把他们组合在一起的潜经验。</p></blockquote><p>在混合语言编程中，我们遇到的第一个问题是如何需要让他们可以互相调用。也就是像C++可以调用Python的函数、Python又可以调用C++的函数。</p><p>对于C++和Python的混合编程主要有两种方式。</p><ol><li>将C++写的模块编译成动态链接库，然后由Python主程序使用。这种一般是单方向的使用。</li><li>用C++主程序调用Python。然后Python中可以使用C++主程序的函数。</li></ol><p>对于第一种方式非常简单，我们在此就不讨论了。我们将着重讨论第二种方式。<span id=\"more-972\"></span></p><h2>Simple Exampe of Mixing C++ and Python Code</h2><p>我们举个例子。以下是C++主程序，做的事情是创建了一个空白的地图，然后加载Python模块构建地图。</p><pre class=\"brush: cpp; highlight: [56,60,74,87,92,95]; title: ; notranslate\">
+// website: http://EverET.org
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;boost/python.hpp&gt;
+
+class Map
+{
+public:
+    Map() : m_map(10, std::vector&lt;char&gt;(20, '.'))
+    {}
+
+    void SetPixel(int x, int y, int val)
+    {
+	m_map[y][x] = val;
+    }
+
+    void Print()
+    {
+	for (int i = 0; i &lt; m_map.size(); ++i)
+	{
+	    for (int j = 0; j &lt; m_map[i].size(); ++j)
+	    {
+		std::cout &lt;&lt; m_map[i][j];
+	    }
+	    std::cout &lt;&lt; std::endl;
+	}
+    }
+
+private:
+    std::vector&lt;std::vector&lt;char&gt; &gt; m_map;
+};
+
+void InitPython()
+{
+    Py_Initialize();
+
+    if(!Py_IsInitialized())
+    {
+	exit(-1);
+    }
+}
+
+// Get the instance of the map, Singleton Pattern
+// only one map instance exists
+Map* GetMapInstance()
+{
+    static Map* the_map = NULL;
+    if (!the_map)
+    {
+	the_map = new Map();
+    }
+    return the_map;
+}
+
+// export c++ function and class to python
+BOOST_PYTHON_MODULE(MyEngine)
+{
+    using namespace boost::python;
+    def(&quot;GetMapInstance&quot;, GetMapInstance,
+	return_value_policy&lt; reference_existing_object &gt;());
+    class_&lt;Map&gt;(&quot;Map&quot;, &quot;Game Map&quot;)
+    	.def(&quot;Print&quot;, &amp;Map::Print)
+    	.def(&quot;SetPixel&quot;, &amp;Map::SetPixel,
+	    (arg(&quot;x&quot;), &quot;y&quot;, &quot;val&quot;));
+}
+
+int main()
+{
+    try
+    {
+	using namespace boost::python;
+
+	InitPython();
+	initMyEngine(); // init MyEngine Module
+
+	// Add current path to sys.path. You have to
+	// do this in linux. While in Windows,
+	// current path is already in sys.path.
+	object main_module = import( &quot;__main__&quot; );
+	object main_namespace = main_module.attr( &quot;__dict__&quot; );
+	object ignored = exec(
+	    &quot;import sys\\n&quot;
+	    &quot;sys.path.append('.')\\n&quot;, main_namespace );
+
+	Map* map = GetMapInstance();
+	std::cout &lt;&lt; &quot;Before python\\n&quot;;
+	map-&gt;Print();
+
+	// load python to design the map
+	object mapMaker = import(&quot;mapmaker&quot;);
+	object makeMap = mapMaker.attr(&quot;make_map&quot;);
+	makeMap();
+
+	std::cout &lt;&lt; &quot;\\nAfter python\\n&quot;;
+	map-&gt;Print();
+    }
+    catch (...)
+    {
+	PyErr_Print();
+    }
+
+    return 0;
+}
+</pre><p>Python写的地图生成程序：mapmaker.py。</p><pre class=\"brush: python; highlight: [1,4]; title: mapmaker.py; notranslate\">
+import MyEngine
+import random
+
+def make_map():
+    the_map = MyEngine.GetMapInstance()
+    n = 10
+    for i in range(n):
+        for j in range(10 - i, 10 + i - 1):
+            the_map.SetPixel(j, i, ord('*'))
+</pre><p>我们可以仔细看看C++和Python代码中被高亮的行（代码是js高亮的，如果还没高亮请稍等页面加载完成）。</p><p>C++通过Boost库可以方便地和Python交互。当然我们还可以直接是用解释器提供的C API的和Python交互，不过这样会有非常多的累赘的代码。</p><p>C++和Python交互的关键之处是通过BOOST_PYTHON_MODULE来导出C++的函数和类，此外还需要执行initMyEngine这个函数来将这个模块注册进Python解释器。具体细节可以见代码。</p><p>对于</p><blockquote><pre> def(\"GetMapInstance\", GetMapInstance,
+	return_value_policy&lt; reference_existing_object &gt;());</pre></blockquote><p>中的return_value_policy&lt; reference_existing_object &gt;()可以参考我以前写的：<a href=\"http://blog.csdn.net/cedricporter/article/details/6828322\">http://blog.csdn.net/cedricporter/article/details/6828322</a></p><h2>编译：</h2><blockquote><p>g++ main.cpp -o map -I/usr/include/python2.7 -lboost_python -lpython2.7</p></blockquote><p>在Windows上编译更容易，就不再罗嗦。</p><p>最后程序的输出，可以见到Python将地图由空白变成了一个三角形：</p><p><a href=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-03-210111.png\" rel=\"lightbox[972]\"><img class=\"alignnone size-full wp-image-978\" title=\"Screenshot from 2012-05-03 21:01:11\" src=\"http://everet.org/wp-content/uploads/2012/05/Screenshot-from-2012-05-03-210111.png\" alt=\" \" width=\"280\" height=\"434\" /></a></p><h2>Example</h2><p>对于用合适的语言来做合适的事情，会让开发效率和产品质量有所提高。例如，在Emacs里面，就可以是用lisp来控制emacs，AutoCAD中也可以是用脚本来绘图。这样的用户接口更加灵活。</p><h2>Other</h2><h3>Scar</h3><p>对于Scar这款3D太空：<a href=\"http://www.everet.org/2012/01/scar.html\">http://www.everet.org/2012/01/scar.html</a>，是用C++和Python混合编程。在Scar中的2D界面库，有C++写成的基本元件，例如容器和按钮。我们可以在Python中组装C++元件来装配游戏的2D界面，然后返回一棵树的根节点给C++。于是像Scar中的水平仪，提示面板，地图，血条等等都是在Python中组装好的。此外，我们还可以在Python中编写元件的事件处理函数。这样做的好处是，我们在修改界面的时候，不再需要重新编译程序，只要修改脚本就好。</p><p>这样的开发会更加便捷而且应对变更的能力会更强。</p><h3>ImaginationFactory</h3><p>Imagination Factory是在大一的时候写的一个图像处理程序，<a href=\"http://everet.org/2012/01/imagination-factory.html\">http://everet.org/2012/01/imagination-factory.html</a>。</p><p>图像处理核心使用C++编写，界面使用C#/WPF编写。用WPF写界面即方便又便捷，可以轻松地实现很酷的效果。</p><h3>Clover —— Computer Simulation Origami</h3><p>Clover是一款计算机模拟折纸的程序，主要程序使用C#编写，内嵌Python解释器，可以用Python折纸。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/cpp-python.html\">http://everet.org/2012/05/cpp-python.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/cpp-python.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/cpp-python.html/feed") (slash:comments nil "0"))) ("论程序之帮助文档" "<p>每个程序都拥有自己的生命，每个程序都应该拥有自己的帮助文档。一个好的帮助文档可以让一个程序的寿命延长。当然，有了一个好的帮助文档还不够，还需要友好快捷的帮助方式。</p><h2>Shell</h2><p>我们在shell下可以使用各种小工具，像ls，ps，grep等，当我们需要查看ls的帮助，可以是键入man ls，至于什么是man，我们可以输入man man，就可以看到man的帮助了。</p><p>这给用户提供了一种统一而便捷的帮助接口。</p><h2>Vim</h2><p>Vim的帮助主要是通过:help， 例如，可以输入:help x，查看x按键的帮助。如果不指定主题，:help默认打开一个总揽的帮助窗口。</p><h2>Python</h2><p>Python交互式解释器除了python自带的，还有一个非常好用的交互环境是iPython，ipython – Tools for Interactive Computing in Python。</p><p>Python的文档是和对象绑定在一起的，每个对象都有一个__doc__的属性，我们可以通过这个属性查看这个对象的文档，例如print str.__doc__，当然，如果我们需要更详细的帮助文档，我们可以help(str)，查看str的帮助。如果我们想了解一下os模块，我们可以键入help(os)，就可以看到关于os的详细的帮助文档。</p><p>Python是个神奇的语言，交互解释器也是一个神奇的环境。</p><h2>Emacs</h2><p>emacs里面有非常详细的各种文档，我们可以是用<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span>  <span style=\"color: #3366ff; background-color: #fac;\"> i </span><span style=\"color: #3366ff; background-color: #fac;\"> g </span>打开它，然后阅读帮助文档。</p><p>例如，我们想知道emacs的调试工具的使用，我们可以键入 <span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> i </span><span style=\"color: #3366ff; background-color: #fac;\"> g </span><span style=\"color: #3366ff; background-color: #fac;\"> (emacs) Debuggers </span><span style=\"color: #3366ff; background-color: #fac;\"> RET </span> ，然后就可以看到像gdb，pdb的帮助手册。这个是非常方面的。</p><p>如果我们想知道某个按键具体是做什么的，我们可以<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> k </span>，然后按下按键，例如<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+x </span><span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+f </span> ,就会打开如下的帮助：<span id=\"more-956\"></span></p><blockquote><p>C-x C-f runs the command ido-find-file, which is an interactive<br />
+compiled Lisp function.</p><p>It is bound to, C-x C-f,.</p><p>(ido-find-file)</p><p>Edit file with name obtained via minibuffer.<br />
+The file is displayed according to `ido-default-file-method’ — the<br />
+default is to show it in the same window, unless it is already<br />
+visible in another frame.<br />
+。。。。。。</p></blockquote><p>再例如，我们想知道<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+c </span>开头，开头的按键的有哪些，我们可以输入<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+c </span><span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span>，然后就可以看到Ctrl+c开头的按键们的帮助。</p><p>这是一种非常友好的帮助功能。此外，如果我们对某些函数不是很熟悉，我们可以按下<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> f </span>，然后输入函数名，就可以看到这个函数的帮助。</p><h2>总结</h2><p>像这种级别的帮助方式，在其他软件是很难找到的。其他软件的一般做法是有一个快捷键表，然后我们就要自己去那个表找对应的快捷键查看帮助（Eclipse就是一个很好的例子），这样软件实现起来相对容易一些，但是对于用户是不友好的，浪费用户时间和打击用户学习的兴趣。</p><p>记得很久以前的Windows对话框，在最大化最小化关闭按钮旁边会有一个?的按钮，我们点了那个按钮，接着去点其他东西就可以查看那个东西的帮助，这个是对于GUI一个很棒的帮助方式。</p><p>对于一个友好的帮助方式，总是可以让用户轻易的找到想知道的按键，按钮，功能的帮助文档，例如提供搜索，通过help(XXX)，man XXX或者Ctrl+h，“？”按钮等手段直接找到当前功能及周边功能的帮助。而一个差劲的帮助方式，是强迫用户自己去一个巨大的手册里自己寻找帮助。</p><p>当然，要做到一个友好的帮助方式，我们在程序设计的时候就必须得考虑用户帮助的问题。</p><p>例如更好地建立功能与帮助手册之间的关系，如何找到功能对应的快捷键，如何找到快捷键对应的功能，如何找到功能相关的其他功能的帮助，如果动态添加了模块，这些模块的帮助文档如何自动加入到当前的帮助环境中，这些问题都值得我们仔细斟酌。</p><p>如果不提前考虑好对于帮助的扩展，那么在后期强加进去帮助方式容易会打乱代码的结构。</p><p>所有的帮助信息都应该在用户需要的时候自动出现。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/help.html\">http://everet.org/2012/05/help.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/help.html#comments\">No comment</a></small></p>" "http://everet.org/2012/05/help.html" (20385 25171) old 5 nil nil ((title nil "论程序之帮助文档") (link nil "http://everet.org/2012/05/help.html") (comments nil "http://everet.org/2012/05/help.html#comments") (pubDate nil "Wed, 02 May 2012 16:35:31 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Design") (guid ((isPermaLink . "false")) "http://everet.org/?p=956") (description nil "每个程序都拥有自己的生命，每个程序都应该拥有自己的帮助文档。一个好的帮助文档可以让一个程序的寿命延长。当然，有了一个好的帮助文档还不够，还需要友好快捷的帮助方式。 Shell 我们在shell下可以使用各种小工具，像ls，ps，grep等，当我们需要查看ls的帮助，可以是键入man ls，至于什么是man，我们可以输入man man，就可以看到man的帮助了。 这给用户提供了一种统一而便捷的帮助接口。 Vim Vim的帮助主要是通过:help， 例如，可以输入:help x，查看x按键的帮助。如果不指定主题，:help默认打开一个总揽的帮助窗口。 Python Python交互式解释器除了python自带的，还有一个非常好用的交互环境是iPython，ipython &#8211; Tools for Interactive Computing in Python。 Python的文档是和对象绑定在一起的，每个对象都有一个__doc__的属性，我们可以通过这个属性查看这个对象的文档，例如print str.__doc__，当然，如果我们需要更详细的帮助文档，我们可以help(str)，查看str的帮助。如果我们想了解一下os模块，我们可以键入help(os)，就可以看到关于os的详细的帮助文档。 Python是个神奇的语言，交互解释器也是一个神奇的环境。 Emacs emacs里面有非常详细的各种文档，我们可以是用 Ctrl+h    i   g 打开它，然后阅读帮助文档。 例如，我们想知道emacs的调试工具的使用，我们可以键入  Ctrl+h   i   g   (emacs) Debuggers   RET  ，然后就可以看到像gdb，pdb的帮助手册。这个是非常方面的。 如果我们想知道某个按键具体是做什么的，我们可以 Ctrl+h   k ，然后按下按键，例如 Ctrl+x   Ctrl+f  ,就会打开如下的帮助： C-x C-f runs the command ido-find-file, which is an interactive compiled Lisp function. It is bound to,<a href=\"http://everet.org/2012/05/help.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p>每个程序都拥有自己的生命，每个程序都应该拥有自己的帮助文档。一个好的帮助文档可以让一个程序的寿命延长。当然，有了一个好的帮助文档还不够，还需要友好快捷的帮助方式。</p><h2>Shell</h2><p>我们在shell下可以使用各种小工具，像ls，ps，grep等，当我们需要查看ls的帮助，可以是键入man ls，至于什么是man，我们可以输入man man，就可以看到man的帮助了。</p><p>这给用户提供了一种统一而便捷的帮助接口。</p><h2>Vim</h2><p>Vim的帮助主要是通过:help， 例如，可以输入:help x，查看x按键的帮助。如果不指定主题，:help默认打开一个总揽的帮助窗口。</p><h2>Python</h2><p>Python交互式解释器除了python自带的，还有一个非常好用的交互环境是iPython，ipython &#8211; Tools for Interactive Computing in Python。</p><p>Python的文档是和对象绑定在一起的，每个对象都有一个__doc__的属性，我们可以通过这个属性查看这个对象的文档，例如print str.__doc__，当然，如果我们需要更详细的帮助文档，我们可以help(str)，查看str的帮助。如果我们想了解一下os模块，我们可以键入help(os)，就可以看到关于os的详细的帮助文档。</p><p>Python是个神奇的语言，交互解释器也是一个神奇的环境。</p><h2>Emacs</h2><p>emacs里面有非常详细的各种文档，我们可以是用<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span>  <span style=\"color: #3366ff; background-color: #fac;\"> i </span><span style=\"color: #3366ff; background-color: #fac;\"> g </span>打开它，然后阅读帮助文档。</p><p>例如，我们想知道emacs的调试工具的使用，我们可以键入 <span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> i </span><span style=\"color: #3366ff; background-color: #fac;\"> g </span><span style=\"color: #3366ff; background-color: #fac;\"> (emacs) Debuggers </span><span style=\"color: #3366ff; background-color: #fac;\"> RET </span> ，然后就可以看到像gdb，pdb的帮助手册。这个是非常方面的。</p><p>如果我们想知道某个按键具体是做什么的，我们可以<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> k </span>，然后按下按键，例如<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+x </span><span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+f </span> ,就会打开如下的帮助：<span id=\"more-956\"></span></p><blockquote><p>C-x C-f runs the command ido-find-file, which is an interactive<br />
+compiled Lisp function.</p><p>It is bound to, C-x C-f,.</p><p>(ido-find-file)</p><p>Edit file with name obtained via minibuffer.<br />
+The file is displayed according to `ido-default-file-method&#8217; &#8212; the<br />
+default is to show it in the same window, unless it is already<br />
+visible in another frame.<br />
+。。。。。。</p></blockquote><p>再例如，我们想知道<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+c </span>开头，开头的按键的有哪些，我们可以输入<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+c </span><span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span>，然后就可以看到Ctrl+c开头的按键们的帮助。</p><p>这是一种非常友好的帮助功能。此外，如果我们对某些函数不是很熟悉，我们可以按下<span style=\"color: #3366ff; background-color: #fac;\"> Ctrl+h </span><span style=\"color: #3366ff; background-color: #fac;\"> f </span>，然后输入函数名，就可以看到这个函数的帮助。</p><h2>总结</h2><p>像这种级别的帮助方式，在其他软件是很难找到的。其他软件的一般做法是有一个快捷键表，然后我们就要自己去那个表找对应的快捷键查看帮助（Eclipse就是一个很好的例子），这样软件实现起来相对容易一些，但是对于用户是不友好的，浪费用户时间和打击用户学习的兴趣。</p><p>记得很久以前的Windows对话框，在最大化最小化关闭按钮旁边会有一个?的按钮，我们点了那个按钮，接着去点其他东西就可以查看那个东西的帮助，这个是对于GUI一个很棒的帮助方式。</p><p>对于一个友好的帮助方式，总是可以让用户轻易的找到想知道的按键，按钮，功能的帮助文档，例如提供搜索，通过help(XXX)，man XXX或者Ctrl+h，“？”按钮等手段直接找到当前功能及周边功能的帮助。而一个差劲的帮助方式，是强迫用户自己去一个巨大的手册里自己寻找帮助。</p><p>当然，要做到一个友好的帮助方式，我们在程序设计的时候就必须得考虑用户帮助的问题。</p><p>例如更好地建立功能与帮助手册之间的关系，如何找到功能对应的快捷键，如何找到快捷键对应的功能，如何找到功能相关的其他功能的帮助，如果动态添加了模块，这些模块的帮助文档如何自动加入到当前的帮助环境中，这些问题都值得我们仔细斟酌。</p><p>如果不提前考虑好对于帮助的扩展，那么在后期强加进去帮助方式容易会打乱代码的结构。</p><p>所有的帮助信息都应该在用户需要的时候自动出现。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/help.html\">http://everet.org/2012/05/help.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/help.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/help.html/feed") (slash:comments nil "0"))) ("发现一个很好玩的Python网站" "<p><a href=\"http://www.pythonchallenge.com/\" target=\"_blank\">http://www.pythonchallenge.com/</a></p><p>又是一个解题过关的网站，不过这次题目是Python的，有兴趣的同学们一起上吧。</p><p>豆瓣的介绍：</p><blockquote><p>来玩pythonchallenge吧，理由如下：<br />
+0、Tim Peters的理由：”I’ve been using Python since 1991, and while I’ve always enjoyed it, I have to confess this is the most Python fun I’ve had this century! Excellent work. Thank you!”<br />
+1、沈大仙的理由：”说到这里, 想起我们部门新来两位同事, 在使用 Python 做项目之前, 先沉下心来做了两周的 Python Challenge, 把 Python 模了个透, 结果两周后程序写出来相当漂亮, 甚至让我这种老牌 Python 程序员跌破眼镜, 与我周围的同事立马有了境界上的区分。”<br />
+2、给你的理由：能在短时间内完成全部33题，这可以证明你很聪明。<br />
+3、自己的理由：俺连滚带爬好不容易做到了第27题，沮丧地看到了自己的笨，但从好处想，这至少可以证明俺有毅力，嘿嘿。<br />
+4、自私的理由：憋死在第27题，等老大们来给个提示拉俺一把吧。</p></blockquote><p><span id=\"more-953\"></span><br />
+刚刚很快做了几道题，发现前面的题目貌似很简单，后边据说很难，不过发现凌晨2点多了，明天上课，于是决定去睡觉了。明日再战～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/pythonchallenge.html\">http://everet.org/2012/05/pythonchallenge.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/pythonchallenge.html#comments\">No comment</a></small></p>" "http://everet.org/2012/05/pythonchallenge.html" (20384 9973) new 6 nil nil ((title nil "发现一个很好玩的Python网站") (link nil "http://everet.org/2012/05/pythonchallenge.html") (comments nil "http://everet.org/2012/05/pythonchallenge.html#comments") (pubDate nil "Tue, 01 May 2012 18:09:57 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=953") (description nil "http://www.pythonchallenge.com/ 又是一个解题过关的网站，不过这次题目是Python的，有兴趣的同学们一起上吧。 豆瓣的介绍： 来玩pythonchallenge吧，理由如下： 0、Tim Peters的理由：”I&#8217;ve been using Python since 1991, and while I&#8217;ve always enjoyed it, I have to confess this is the most Python fun I&#8217;ve had this century! Excellent work. Thank you!” 1、沈大仙的理由：”说到这里, 想起我们部门新来两位同事, 在使用 Python 做项目之前, 先沉下心来做了两周的 Python Challenge, 把 Python 模了个透, 结果两周后程序写出来相当漂亮, 甚至让我这种老牌 Python 程序员跌破眼镜, 与我周围的同事立马有了境界上的区分。” 2、给你的理由：能在短时间内完成全部33题，这可以证明你很聪明。 3、自己的理由：俺连滚带爬好不容易做到了第27题，沮丧地看到了自己的笨，但从好处想，这至少可以证明俺有毅力，嘿嘿。 4、自私的理由：憋死在第27题，等老大们来给个提示拉俺一把吧。 刚刚很快做了几道题，发现前面的题目貌似很简单，后边据说很难，不过发现凌晨2点多了，明天上课，于是决定去睡觉了。明日再战～<a href=\"http://everet.org/2012/05/pythonchallenge.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p><a href=\"http://www.pythonchallenge.com/\" target=\"_blank\">http://www.pythonchallenge.com/</a></p><p>又是一个解题过关的网站，不过这次题目是Python的，有兴趣的同学们一起上吧。</p><p>豆瓣的介绍：</p><blockquote><p>来玩pythonchallenge吧，理由如下：<br />
+0、Tim Peters的理由：”I&#8217;ve been using Python since 1991, and while I&#8217;ve always enjoyed it, I have to confess this is the most Python fun I&#8217;ve had this century! Excellent work. Thank you!”<br />
+1、沈大仙的理由：”说到这里, 想起我们部门新来两位同事, 在使用 Python 做项目之前, 先沉下心来做了两周的 Python Challenge, 把 Python 模了个透, 结果两周后程序写出来相当漂亮, 甚至让我这种老牌 Python 程序员跌破眼镜, 与我周围的同事立马有了境界上的区分。”<br />
+2、给你的理由：能在短时间内完成全部33题，这可以证明你很聪明。<br />
+3、自己的理由：俺连滚带爬好不容易做到了第27题，沮丧地看到了自己的笨，但从好处想，这至少可以证明俺有毅力，嘿嘿。<br />
+4、自私的理由：憋死在第27题，等老大们来给个提示拉俺一把吧。</p></blockquote><p><span id=\"more-953\"></span><br />
+刚刚很快做了几道题，发现前面的题目貌似很简单，后边据说很难，不过发现凌晨2点多了，明天上课，于是决定去睡觉了。明日再战～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/05/pythonchallenge.html\">http://everet.org/2012/05/pythonchallenge.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/05/pythonchallenge.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/05/pythonchallenge.html/feed") (slash:comments nil "0"))) ("临近大三结束的一些杂乱的思绪" "<p>今天博客主页改版终于告一段落，突然发现很久没有更新博客的文章了，于是想写把一些凌乱的思绪记录到博客中。以前的很多想法都是用笔写下的，今天就当作例外吧。不过发现写在博客里可以搜索，写在本子里，只能人工翻阅查找，不过人工翻阅也会帮助回忆以前做了什么。</p><p>我写的字很难看，于是想在写日记的时候练字，想起中小学时被老师逼着练字是一件很痛苦的事情，没想到到了大学，写字竟成了一种享受。</p><p>很多程序员写的字比小学一年级的小朋友还更加扭曲，这让我不禁为汉字感到悲哀。作为中国人都写不好汉字，这是什么情况呢？<span id=\"more-944\"></span></p><p>想起一个无关本文的笑话：</p><blockquote><p>某程序员对书法十分感兴趣，退休后决定在这方面有所建树。于是花重金购买了上等的文房四宝。一日，饭后突生雅兴，一番磨墨拟纸，并点上了上好的檀香，颇有王羲之风范，又具颜真卿气势，定神片刻，泼墨挥毫，郑重地写下一行字：hello world。</p></blockquote><p>或许每个人的追求的不一样，有的人想，只要我写的字别人看得懂就好了（我承认我曾经也这么想过，所以致使我现在的字还是很难看），有的人想，反正我都是用电脑打字，基本上不会有机会写字。</p><p>不过可喜的是，发现读软件的还是有写字非常好的，例如 <a href=\"http://zhke.name/\" target=\"_blank\">洪科</a> ，他的字就写的非常棒，一年多以前他帮我的写的箴言我还挂在书桌上。</p><p>写字很多时候是与人交流，那么我们是想用美好的东西与人交流还是用恶心的东西与人交流呢？</p><p>优美的字让看的人心情舒畅，给予人好的用户体验，为别人带来快乐，是站在别人的角度考虑问题。</p><p>这几天我把主页由黑色换成了白色，其中有诸多的原因。我经常使用的各种软件，都被我换成了黑色背景，因为我会在阴暗的环境下长时间对着电脑（经常是凌晨，所以很阴暗-_-），黑色的背景在黑夜中让眼睛更加舒适。不过在少数几次白天去图书馆写代码的时候，发现黑色背景导致屏幕反光更为严重，甚至都无法看清屏幕了。</p><p><a href=\"http://kidsang.com/\" target=\"_blank\">屠文翔同学</a>一直喜欢白色背景，他指出像我博客这种黑色的主题，第一眼看上去可能会很酷，但是看久了很容易生厌，而且并不是每个人都喜欢黑色喜欢在深夜看电脑。<a href=\"http://kidsang.com/\" target=\"_blank\">屠文翔同学</a>所言极是。而且现在基本所有的网站都是白色的，有一次我环境光线十分充足的情况下去了<a href=\"http://china.dell.com/cn/p/alienware-laptops?~ck=anav\" target=\"_blank\">Alienware</a>的网页，顿时觉得黑色的网页让人很不适。可见黑色网页不适合大多数情况。</p><p>于是在昨晚心血来潮就决定把主页换成白色，这样或许让读者会感觉更好一些，或许用户体验会更好一些。</p><p>改主页对于我来说不是一件容易的事，我对html，css，js也不是很熟，修改主题显得进度非常缓慢，不过<a href=\"http://everet.org/2012/03/how-to-become-a-hacker.html\">raymond也推荐学习HTML</a>，所以我还是很努力地花了一天时间来修改主题，期间卡住的时候也向屠文翔同学求助，所以问题都可以很快得到解决。于是大部分时间都是花在了微调和浏览器兼容上面。</p><p>在改版过程中，我找到了两个比较顺眼的主题，一个看上去挺漂亮，一个看上去挺简陋的但是可以支持各种设备。于是我选了第一个主题来修改，在经过了大半天的努力，在看上去完成了的时候，我开始打开过去写的文章来围观，发现看上去挺漂亮的，字体大气舒适（其实是字体很大），咋一眼看上去挺漂亮的页面，在我阅读的时候，发现非常的困难。因为主题会适应屏幕，它会撑满整个屏幕，所以文章就会很宽，阅读的时候，眼球就需要左右移动，好累啊。这时候我终于明白了，为什么那么多主题都只是占了窗口中间的一个固定宽度的位置来显示文章，因为这样阅读的时候，恰好眼睛可以看完一行，所以眼睛基本不需要移动，只要滚动鼠标就可以阅读了，这样的体验会更加舒适。</p><p>于是我扔掉了基本改好的第一个主题，开始对第二个看上去很简陋的主题动刀。于是就变成了现在这样的白色外观了。</p><p>于是今天收获的东西是明白了有些看上去很美好的东西，其实一点都不好用，外观的炫酷不是最重要的，重要的内在的体验。</p><p>今天的杂想也告一段落，也要想想未来这段时间的计划。</p><p>现在挤压着许多的书要看，我知道就算我未来两个月全部用来看书也看不完，而且也不可能所有时间看书，这样会很底效，看完很容易就忘了。</p><p>目前看来，最重要的实用技术方面的东西就是看Apache和Python的实现，这个估计会花费很多时间，而且作为一个网络菜鸟，我还需要看很多很多网络方面的书。再作为一个程序菜鸟，我需要看很多设计方面书，最后作为一个算法菜鸟，我还需要努力读懂几本算法书。</p><p>唉，我知道我做的计划基本不会实现的，不过有个计划还是可以指导我需要做什么。</p><p>最后，还需要练体能，看看有没有机会骑车去西藏，哈哈～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/mass-thoughts.html\">http://everet.org/2012/04/mass-thoughts.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/mass-thoughts.html#comments\">7 comments</a></small></p>" "http://everet.org/2012/04/mass-thoughts.html" (20380 9505) new 7 nil nil ((title nil "临近大三结束的一些杂乱的思绪") (link nil "http://everet.org/2012/04/mass-thoughts.html") (comments nil "http://everet.org/2012/04/mass-thoughts.html#comments") (pubDate nil "Sat, 28 Apr 2012 17:13:05 +0000") (dc:creator nil "Stupid ET") (category nil "我的生活") (guid ((isPermaLink . "false")) "http://everet.org/?p=944") (description nil "今天博客主页改版终于告一段落，突然发现很久没有更新博客的文章了，于是想写把一些凌乱的思绪记录到博客中。以前的很多想法都是用笔写下的，今天就当作例外吧。不过发现写在博客里可以搜索，写在本子里，只能人工翻阅查找，不过人工翻阅也会帮助回忆以前做了什么。 我写的字很难看，于是想在写日记的时候练字，想起中小学时被老师逼着练字是一件很痛苦的事情，没想到到了大学，写字竟成了一种享受。 很多程序员写的字比小学一年级的小朋友还更加扭曲，这让我不禁为汉字感到悲哀。作为中国人都写不好汉字，这是什么情况呢？ 想起一个无关本文的笑话： 某程序员对书法十分感兴趣，退休后决定在这方面有所建树。于是花重金购买了上等的文房四宝。一日，饭后突生雅兴，一番磨墨拟纸，并点上了上好的檀香，颇有王羲之风范，又具颜真卿气势，定神片刻，泼墨挥毫，郑重地写下一行字：hello world。 或许每个人的追求的不一样，有的人想，只要我写的字别人看得懂就好了（我承认我曾经也这么想过，所以致使我现在的字还是很难看），有的人想，反正我都是用电脑打字，基本上不会有机会写字。 不过可喜的是，发现读软件的还是有写字非常好的，例如 洪科 ，他的字就写的非常棒，一年多以前他帮我的写的箴言我还挂在书桌上。 写字很多时候是与人交流，那么我们是想用美好的东西与人交流还是用恶心的东西与人交流呢？ 优美的字让看的人心情舒畅，给予人好的用户体验，为别人带来快乐，是站在别人的角度考虑问题。 这几天我把主页由黑色换成了白色，其中有诸多的原因。我经常使用的各种软件，都被我换成了黑色背景，因为我会在阴暗的环境下长时间对着电脑（经常是凌晨，所以很阴暗-_-），黑色的背景在黑夜中让眼睛更加舒适。不过在少数几次白天去图书馆写代码的时候，发现黑色背景导致屏幕反光更为严重，甚至都无法看清屏幕了。 屠文翔同学一直喜欢白色背景，他指出像我博客这种黑色的主题，第一眼看上去可能会很酷，但是看久了很容易生厌，而且并不是每个人都喜欢黑色喜欢在深夜看电脑。屠文翔同学所言极是。而且现在基本所有的网站都是白色的，有一次我环境光线十分充足的情况下去了Alienware的网页，顿时觉得黑色的网页让人很不适。可见黑色网页不适合大多数情况。 于是在昨晚心血来潮就决定把主页换成白色，这样或许让读者会感觉更好一些，或许用户体验会更好一些。 改主页对于我来说不是一件容易的事，我对html，css，js也不是很熟，修改主题显得进度非常缓慢，不过raymond也推荐学习HTML，所以我还是很努力地花了一天时间来修改主题，期间卡住的时候也向屠文翔同学求助，所以问题都可以很快得到解决。于是大部分时间都是花在了微调和浏览器兼容上面。 在改版过程中，我找到了两个比较顺眼的主题，一个看上去挺漂亮，一个看上去挺简陋的但是可以支持各种设备。于是我选了第一个主题来修改，在经过了大半天的努力，在看上去完成了的时候，我开始打开过去写的文章来围观，发现看上去挺漂亮的，字体大气舒适（其实是字体很大），咋一眼看上去挺漂亮的页面，在我阅读的时候，发现非常的困难。因为主题会适应屏幕，它会撑满整个屏幕，所以文章就会很宽，阅读的时候，眼球就需要左右移动，好累啊。这时候我终于明白了，为什么那么多主题都只是占了窗口中间的一个固定宽度的位置来显示文章，因为这样阅读的时候，恰好眼睛可以看完一行，所以眼睛基本不需要移动，只要滚动鼠标就可以阅读了，这样的体验会更加舒适。 于是我扔掉了基本改好的第一个主题，开始对第二个看上去很简陋的主题动刀。于是就变成了现在这样的白色外观了。 于是今天收获的东西是明白了有些看上去很美好的东西，其实一点都不好用，外观的炫酷不是最重要的，重要的内在的体验。 今天的杂想也告一段落，也要想想未来这段时间的计划。 现在挤压着许多的书要看，我知道就算我未来两个月全部用来看书也看不完，而且也不可能所有时间看书，这样会很底效，看完很容易就忘了。 目前看来，最重要的实用技术方面的东西就是看Apache和Python的实现，这个估计会花费很多时间，而且作为一个网络菜鸟，我还需要看很多很多网络方面的书。再作为一个程序菜鸟，我需要看很多设计方面书，最后作为一个算法菜鸟，我还需要努力读懂几本算法书。 唉，我知道我做的计划基本不会实现的，不过有个计划还是可以指导我需要做什么。 最后，还需要练体能，看看有没有机会骑车去西藏，哈哈～ 本文链接：http://everet.org/2012/04/mass-thoughts.html &#124; © EverET.org 本文评论：7 comments") (content:encoded nil "<p>今天博客主页改版终于告一段落，突然发现很久没有更新博客的文章了，于是想写把一些凌乱的思绪记录到博客中。以前的很多想法都是用笔写下的，今天就当作例外吧。不过发现写在博客里可以搜索，写在本子里，只能人工翻阅查找，不过人工翻阅也会帮助回忆以前做了什么。</p><p>我写的字很难看，于是想在写日记的时候练字，想起中小学时被老师逼着练字是一件很痛苦的事情，没想到到了大学，写字竟成了一种享受。</p><p>很多程序员写的字比小学一年级的小朋友还更加扭曲，这让我不禁为汉字感到悲哀。作为中国人都写不好汉字，这是什么情况呢？<span id=\"more-944\"></span></p><p>想起一个无关本文的笑话：</p><blockquote><p>某程序员对书法十分感兴趣，退休后决定在这方面有所建树。于是花重金购买了上等的文房四宝。一日，饭后突生雅兴，一番磨墨拟纸，并点上了上好的檀香，颇有王羲之风范，又具颜真卿气势，定神片刻，泼墨挥毫，郑重地写下一行字：hello world。</p></blockquote><p>或许每个人的追求的不一样，有的人想，只要我写的字别人看得懂就好了（我承认我曾经也这么想过，所以致使我现在的字还是很难看），有的人想，反正我都是用电脑打字，基本上不会有机会写字。</p><p>不过可喜的是，发现读软件的还是有写字非常好的，例如 <a href=\"http://zhke.name/\" target=\"_blank\">洪科</a> ，他的字就写的非常棒，一年多以前他帮我的写的箴言我还挂在书桌上。</p><p>写字很多时候是与人交流，那么我们是想用美好的东西与人交流还是用恶心的东西与人交流呢？</p><p>优美的字让看的人心情舒畅，给予人好的用户体验，为别人带来快乐，是站在别人的角度考虑问题。</p><p>这几天我把主页由黑色换成了白色，其中有诸多的原因。我经常使用的各种软件，都被我换成了黑色背景，因为我会在阴暗的环境下长时间对着电脑（经常是凌晨，所以很阴暗-_-），黑色的背景在黑夜中让眼睛更加舒适。不过在少数几次白天去图书馆写代码的时候，发现黑色背景导致屏幕反光更为严重，甚至都无法看清屏幕了。</p><p><a href=\"http://kidsang.com/\" target=\"_blank\">屠文翔同学</a>一直喜欢白色背景，他指出像我博客这种黑色的主题，第一眼看上去可能会很酷，但是看久了很容易生厌，而且并不是每个人都喜欢黑色喜欢在深夜看电脑。<a href=\"http://kidsang.com/\" target=\"_blank\">屠文翔同学</a>所言极是。而且现在基本所有的网站都是白色的，有一次我环境光线十分充足的情况下去了<a href=\"http://china.dell.com/cn/p/alienware-laptops?~ck=anav\" target=\"_blank\">Alienware</a>的网页，顿时觉得黑色的网页让人很不适。可见黑色网页不适合大多数情况。</p><p>于是在昨晚心血来潮就决定把主页换成白色，这样或许让读者会感觉更好一些，或许用户体验会更好一些。</p><p>改主页对于我来说不是一件容易的事，我对html，css，js也不是很熟，修改主题显得进度非常缓慢，不过<a href=\"http://everet.org/2012/03/how-to-become-a-hacker.html\">raymond也推荐学习HTML</a>，所以我还是很努力地花了一天时间来修改主题，期间卡住的时候也向屠文翔同学求助，所以问题都可以很快得到解决。于是大部分时间都是花在了微调和浏览器兼容上面。</p><p>在改版过程中，我找到了两个比较顺眼的主题，一个看上去挺漂亮，一个看上去挺简陋的但是可以支持各种设备。于是我选了第一个主题来修改，在经过了大半天的努力，在看上去完成了的时候，我开始打开过去写的文章来围观，发现看上去挺漂亮的，字体大气舒适（其实是字体很大），咋一眼看上去挺漂亮的页面，在我阅读的时候，发现非常的困难。因为主题会适应屏幕，它会撑满整个屏幕，所以文章就会很宽，阅读的时候，眼球就需要左右移动，好累啊。这时候我终于明白了，为什么那么多主题都只是占了窗口中间的一个固定宽度的位置来显示文章，因为这样阅读的时候，恰好眼睛可以看完一行，所以眼睛基本不需要移动，只要滚动鼠标就可以阅读了，这样的体验会更加舒适。</p><p>于是我扔掉了基本改好的第一个主题，开始对第二个看上去很简陋的主题动刀。于是就变成了现在这样的白色外观了。</p><p>于是今天收获的东西是明白了有些看上去很美好的东西，其实一点都不好用，外观的炫酷不是最重要的，重要的内在的体验。</p><p>今天的杂想也告一段落，也要想想未来这段时间的计划。</p><p>现在挤压着许多的书要看，我知道就算我未来两个月全部用来看书也看不完，而且也不可能所有时间看书，这样会很底效，看完很容易就忘了。</p><p>目前看来，最重要的实用技术方面的东西就是看Apache和Python的实现，这个估计会花费很多时间，而且作为一个网络菜鸟，我还需要看很多很多网络方面的书。再作为一个程序菜鸟，我需要看很多设计方面书，最后作为一个算法菜鸟，我还需要努力读懂几本算法书。</p><p>唉，我知道我做的计划基本不会实现的，不过有个计划还是可以指导我需要做什么。</p><p>最后，还需要练体能，看看有没有机会骑车去西藏，哈哈～</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/mass-thoughts.html\">http://everet.org/2012/04/mass-thoughts.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/mass-thoughts.html#comments\">7 comments</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/04/mass-thoughts.html/feed") (slash:comments nil "7"))) ("Python的“黑暗魔法”，两行解一元一次方程" "<p>无意看到一个大神写的《<a href=\"http://code.activestate.com/recipes/365013-linear-equations-solver-in-3-lines/\" target=\"_blank\">Linear equations solver in 3 lines (Python recipe)</a>》，Python解一元一次方程只需要三行就完成了，确实很强悍啊。</p><p>我们来围观一下：<br /><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-195023.png\" rel=\"lightbox[935]\"><img title=\"Screenshot at 2012-04-24 19:50:23\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-195023.png\" alt=\" \" width=\"542\" height=\"134\" /></a></p><pre>说到底呢，这个段代码的关键是利用了复数。
+第一步：
+2 * x + 233 = x * 8 + 3
+变成
+2 * x + 233 -(x * 8 + 3)
+然后把x变成虚数1j
+然后变成
+2 * 1j + 233 -(1j * 8 + 3)
+通过eval算出结果为230-6j
+因为我们知道这个表达式结果为0，而且j也相当于x。
+所以问题变成了：230-6j=0，也就是230-6x=0。
+最后x = - 230 / 6 = 38.33333333336。</pre><p><span id=\"more-935\"></span></p><pre></pre><p>这里的核心是用到了Python的<span style=\"color: #3366ff;\">黑暗魔法eval</span>，eval的第一个参数是表达式，第二个参数是命名空间，也就是把 x = 1j 通过第二个参数把一些值放进去。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-200440.png\" rel=\"lightbox[935]\"><img class=\"alignnone size-full wp-image-937\" title=\"Screenshot at 2012-04-24 20:04:40\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-200440.png\" alt=\" \" width=\"293\" height=\"82\" /></a></p><p>神奇的求解函数：</p><pre class=\"brush: python; title: ; notranslate\">
+def s(eq, var='x'):
+r = eval(eq.replace('=', '-(') + ')', {var:1j})
+return -r.real / r.imag
+</pre><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/linear-equations-solvers-in-python.html\">http://everet.org/2012/04/linear-equations-solvers-in-python.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/linear-equations-solvers-in-python.html#comments\">No comment</a></small></p>" "http://everet.org/2012/04/linear-equations-solvers-in-python.html" (20374 38698) new 8 nil nil ((title nil "Python的“黑暗魔法”，两行解一元一次方程") (link nil "http://everet.org/2012/04/linear-equations-solvers-in-python.html") (comments nil "http://everet.org/2012/04/linear-equations-solvers-in-python.html#comments") (pubDate nil "Tue, 24 Apr 2012 12:06:02 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=935") (description nil "无意看到一个大神写的《Linear equations solver in 3 lines (Python recipe)》，Python解一元一次方程只需要三行就完成了，确实很强悍啊。 我们来围观一下： 说到底呢，这个段代码的关键是利用了复数。 第一步： 2 * x + 233 = x * 8 + 3 变成 2 * x + 233 -(x * 8 + 3) 然后把x变成虚数1j 然后变成 2 * 1j + 233 -(1j * 8 + 3) 通过eval算出结果为230-6j 因为我们知道这个表达式结果为0，而且j也相当于x。 所以问题变成了：230-6j=0，也就是230-6x=0。 最后x = - 230 / 6 =<a href=\"http://everet.org/2012/04/linear-equations-solvers-in-python.html\"><br /><br /> (More)…</a>") (content:encoded nil "<p>无意看到一个大神写的《<a href=\"http://code.activestate.com/recipes/365013-linear-equations-solver-in-3-lines/\" target=\"_blank\">Linear equations solver in 3 lines (Python recipe)</a>》，Python解一元一次方程只需要三行就完成了，确实很强悍啊。</p><p>我们来围观一下：<br /><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-195023.png\" rel=\"lightbox[935]\"><img title=\"Screenshot at 2012-04-24 19:50:23\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-195023.png\" alt=\" \" width=\"542\" height=\"134\" /></a></p><pre>说到底呢，这个段代码的关键是利用了复数。
+第一步：
+2 * x + 233 = x * 8 + 3
+变成
+2 * x + 233 -(x * 8 + 3)
+然后把x变成虚数1j
+然后变成
+2 * 1j + 233 -(1j * 8 + 3)
+通过eval算出结果为230-6j
+因为我们知道这个表达式结果为0，而且j也相当于x。
+所以问题变成了：230-6j=0，也就是230-6x=0。
+最后x = - 230 / 6 = 38.33333333336。</pre><p><span id=\"more-935\"></span></p><pre></pre><p>这里的核心是用到了Python的<span style=\"color: #3366ff;\">黑暗魔法eval</span>，eval的第一个参数是表达式，第二个参数是命名空间，也就是把 x = 1j 通过第二个参数把一些值放进去。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-200440.png\" rel=\"lightbox[935]\"><img class=\"alignnone size-full wp-image-937\" title=\"Screenshot at 2012-04-24 20:04:40\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-24-200440.png\" alt=\" \" width=\"293\" height=\"82\" /></a></p><p>神奇的求解函数：</p><pre class=\"brush: python; title: ; notranslate\">
+def s(eq, var='x'):
+    r = eval(eq.replace('=', '-(') + ')', {var:1j})
+    return -r.real / r.imag
+</pre><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/linear-equations-solvers-in-python.html\">http://everet.org/2012/04/linear-equations-solvers-in-python.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/linear-equations-solvers-in-python.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/04/linear-equations-solvers-in-python.html/feed") (slash:comments nil "0"))) ("Ubuntu上的屏幕截图" "<p>偶们都是被QQ截图宠坏的一代，QQ截图确实很好用，不过在Linux下就木有了，于是该怎么办呢。</p><p>我们可以使用系统自带的截图，默认按Print Screen全屏截图或者Alt + Print Screen截活动窗口。</p><p>那如果我们想截一个区域，就要打开screenshot，然后选中Select area to grab，非常地麻烦。</p><p><span id=\"more-930\"></span></p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-011846.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-931\" title=\"Screenshot at 2012-04-23 01:18:46\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-011846.png\" alt=\" \" width=\"466\" height=\"381\" /></a></p><p>好，现在我们来添加快捷键Ctrl+Alt+A来模拟QQ截图。我们在系统设置中的键盘设置中打开快捷键。添加一个自定义快捷键。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012037.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-932\" title=\"Screenshot at 2012-04-23 01:20:37\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012037.png\" alt=\" \" width=\"742\" height=\"485\" /></a></p><p>Command填上：gnome-screenshot -a ，也就是区域截图模式。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012047.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-933\" title=\"Screenshot at 2012-04-23 01:20:47\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012047.png\" alt=\" \" width=\"253\" height=\"144\" /></a></p><p>搞定。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/ubuntu-screenshot.html\">http://everet.org/2012/04/ubuntu-screenshot.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/ubuntu-screenshot.html#comments\">No comment</a></small></p>" "http://everet.org/2012/04/ubuntu-screenshot.html" (20372 16213) new 9 nil nil ((title nil "Ubuntu上的屏幕截图") (link nil "http://everet.org/2012/04/ubuntu-screenshot.html") (comments nil "http://everet.org/2012/04/ubuntu-screenshot.html#comments") (pubDate nil "Sun, 22 Apr 2012 17:26:45 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Linux") (category nil "Ubuntu") (guid ((isPermaLink . "false")) "http://everet.org/?p=930") (description nil "偶们都是被QQ截图宠坏的一代，QQ截图确实很好用，不过在Linux下就木有了，于是该怎么办呢。 我们可以使用系统自带的截图，默认按Print Screen全屏截图或者Alt + Print Screen截活动窗口。 那如果我们想截一个区域，就要打开screenshot，然后选中Select area to grab，非常地麻烦。 好，现在我们来添加快捷键Ctrl+Alt+A来模拟QQ截图。我们在系统设置中的键盘设置中打开快捷键。添加一个自定义快捷键。 Command填上：gnome-screenshot -a ，也就是区域截图模式。 搞定。 本文链接：http://everet.org/2012/04/ubuntu-screenshot.html &#124; © EverET.org 本文评论：No comment") (content:encoded nil "<p>偶们都是被QQ截图宠坏的一代，QQ截图确实很好用，不过在Linux下就木有了，于是该怎么办呢。</p><p>我们可以使用系统自带的截图，默认按Print Screen全屏截图或者Alt + Print Screen截活动窗口。</p><p>那如果我们想截一个区域，就要打开screenshot，然后选中Select area to grab，非常地麻烦。</p><p><span id=\"more-930\"></span></p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-011846.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-931\" title=\"Screenshot at 2012-04-23 01:18:46\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-011846.png\" alt=\" \" width=\"466\" height=\"381\" /></a></p><p>好，现在我们来添加快捷键Ctrl+Alt+A来模拟QQ截图。我们在系统设置中的键盘设置中打开快捷键。添加一个自定义快捷键。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012037.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-932\" title=\"Screenshot at 2012-04-23 01:20:37\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012037.png\" alt=\" \" width=\"742\" height=\"485\" /></a></p><p>Command填上：gnome-screenshot -a ，也就是区域截图模式。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012047.png\" rel=\"lightbox[930]\"><img class=\"alignnone size-full wp-image-933\" title=\"Screenshot at 2012-04-23 01:20:47\" src=\"http://everet.org/wp-content/uploads/2012/04/Screenshot-at-2012-04-23-012047.png\" alt=\" \" width=\"253\" height=\"144\" /></a></p><p>搞定。</p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/ubuntu-screenshot.html\">http://everet.org/2012/04/ubuntu-screenshot.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/ubuntu-screenshot.html#comments\">No comment</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/04/ubuntu-screenshot.html/feed") (slash:comments nil "0"))) ("Python打印字符三角形" "<p>想起初中老师教Pascal的时候，就会有各种打印字符三角形的程序让我们写。</p><p>现在发现在Python下竟是如此的容易。可惜当年还不知道世界上有种语言叫Python。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/image9.png\" rel=\"lightbox\"><img style=\"background-image: none; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;\" title=\"image\" src=\"http://everet.org/wp-content/uploads/2012/04/image_thumb9.png\" alt=\"image\" width=\"276\" height=\"208\" border=\"0\" /></a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/python-print-triangle.html\">http://everet.org/2012/04/python-print-triangle.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/python-print-triangle.html#comments\">2 comments</a></small></p>" "http://everet.org/2012/04/python-print-triangle.html" (20366 51759) new 10 nil nil ((title nil "Python打印字符三角形") (link nil "http://everet.org/2012/04/python-print-triangle.html") (comments nil "http://everet.org/2012/04/python-print-triangle.html#comments") (pubDate nil "Wed, 18 Apr 2012 14:05:35 +0000") (dc:creator nil "Stupid ET") (category nil "我的分享") (category nil "Python") (guid ((isPermaLink . "false")) "http://everet.org/?p=924") (description nil "想起初中老师教Pascal的时候，就会有各种打印字符三角形的程序让我们写。 现在发现在Python下竟是如此的容易。可惜当年还不知道世界上有种语言叫Python。 本文链接：http://everet.org/2012/04/python-print-triangle.html &#124; © EverET.org 本文评论：2 comments") (content:encoded nil "<p>想起初中老师教Pascal的时候，就会有各种打印字符三角形的程序让我们写。</p><p>现在发现在Python下竟是如此的容易。可惜当年还不知道世界上有种语言叫Python。</p><p><a href=\"http://everet.org/wp-content/uploads/2012/04/image9.png\" rel=\"lightbox\"><img style=\"background-image: none; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;\" title=\"image\" src=\"http://everet.org/wp-content/uploads/2012/04/image_thumb9.png\" alt=\"image\" width=\"276\" height=\"208\" border=\"0\" /></a></p><hr /><p><small>
+本文链接：<a href=\"http://everet.org/2012/04/python-print-triangle.html\">http://everet.org/2012/04/python-print-triangle.html | © EverET.org</a><br/>
+本文评论：<a href=\"http://everet.org/2012/04/python-print-triangle.html#comments\">2 comments</a></small></p>") (wfw:commentRss nil "http://everet.org/2012/04/python-print-triangle.html/feed") (slash:comments nil "2"))))

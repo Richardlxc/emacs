@@ -1,0 +1,18 @@
+;;; Automatically generated on Mon Apr 16 10:18:35 2012
+;;; Invoked by richard@richard using 23.3.1
+(setq-default kill-ring '(#("http://api.t.sina.com.cn/oauth/authorize?oauth_token=4a378631e6d22688c9dc075402e920ee" 0 85 (face bold url "http://api.t.sina.com.cn/oauth/authorize?oauth_token=4a378631e6d22688c9dc075402e920ee")) #("oauth" 0 5 (face bold url "http://api.t.sina.com.cn/oauth/authorize?oauth_token=4a378631e6d22688c9dc075402e920ee")) #("a" 0 1 (face bold url "http://api.t.sina.com.cn/oauth/authorize?oauth_token=4a378631e6d22688c9dc075402e920ee")) #("http://api.t.sina.com.cn/oauth/authori" 0 38 (face bold url "http://api.t.sina.com.cn/oauth/authorize?oauth_token=4a378631e6d22688c9dc075402e920ee")) #("920ee" 0 5 (face bold url "http://api.t.sina.com.cn/oauth/authorize?oauth_token=4a378631e6d22688c9dc075402e920ee")) #("http://api.t.sina.com.cn/oauth/authorize?oauth_token=4a378631e6d22688c9dc075402e92" 0 82 (face bold url "http://api.t.sina.com.cn/oauth/authorize?oauth_token=4a378631e6d22688c9dc075402e920ee")) ""))
+(setq-default file-name-history '("/usr/share/emacs/23.3/etc/HELLO"))
+(setq-default search-ring '("linux" "listkk"))
+(setq-default regexp-search-ring '("linux
+"))
+(setq-default buffer-name-history '("*Completions*" "*twittering-edit*" "*Pymacs*" "*cfw-calendar*" " *code-conversion-work*" "*scratch*" "*Backtrace*" "*shell*" "*Messages*" "hewoe" "ddd" "*eshell*" "hello" "*info*" "wo" "*Help*" " *srecode-map-tmp*" "*Ido Completions*"))
+(setq-default calc-quick-calc-history '("87*78"))
+(setq-default command-history '((kill-buffer "*Completions*") (kill-buffer "*twittering-edit*") (twittering-update-status-interactive nil) (twit) (weblogger-setup-weblog) (weblogger-start-entry nil) (kill-buffer "*Pymacs*") (kill-buffer "*cfw-calendar*") (cfw:open-calendar-buffer) (switch-to-buffer " *code-conversion-work*") (kill-buffer "*scratch*") (kill-buffer "*Backtrace*") (switch-to-buffer "*scratch*") (describe-key "f" 1 nil) (describe-key " " 1 nil) (evil-find-char nil 97) (evil-find-char nil 118) (evil-yank 634 672 (quote line) nil nil) (wdired-change-to-wdired-mode) (evil-find-char nil 24) (switch-to-buffer "*Pymacs*") (switch-to-buffer "*shell*") (switch-to-buffer "*Messages*") (shell nil) (kill-buffer "hewoe") (kill-buffer "ddd") (switch-to-buffer "ddd") (kill-buffer "*eshell*") (evil-delete 1 14 (quote line) nil nil) (evil-delete 1 2 (quote line) nil nil) (display-time) (evil-delete 2 12 (quote line) nil nil)))
+(setq-default extended-command-history '("twittering-update-status-interactive" "twit" "weblogger-setup-weblog" "weblogger-start-entry" "cfw:open-calendar-buffer" "wdired-change-to-wdired-mode" "shell" "display-time" "buffer-disable-undo" "iswitchb-mode" "org-agenda"))
+(setq-default ido-buffer-history '("Comp" "tw" "py" "cf" "co" "k" "sc" "scr" "she" "me" "he" "dd" "ddd" "d" "esh" "hewoe" "hell" "in" "wo" "w" "ba" "y" "sr" "id"))
+(setq-default iswitchb-history '("ba" "me" "sc" "hello" "co" "wo" "mes"))
+(setq-default minibuffer-history '("854710" "740172927helloworld@gmail.com" "http://1.richardsae.sinaapp.com/xmlrpc/" "1" "4" "12" "2" "32" "97" "20" "98"))
+(setq-default read-expression-history '("deew"))
+(setq-default serial-name-history '("/dev/ttyS0"))
+(setq-default serial-speed-history '("9600" "1200" "2400" "4800" "14400" "19200" "28800" "38400" "57600" "115200"))
+(setq-default twittering-timeline-history '(":home@sina"))
